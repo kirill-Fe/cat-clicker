@@ -402,21 +402,24 @@
                     event.preventDefault();
                     handleClick();
                 }
-            });
+            });    
 
-            // Функция для покупки улучшения (общая)
+          // Функция для покупки улучшения (общая)
             function buyUpgrade(upgradeCost, upgradeEffect) {
-                if (!isRecharging) {
-                    if (score >= upgradeCost) {
-                        score -= upgradeCost;
-                        localStorage.setItem('score', score.toString());
-                        updateScoreDisplay();
-                        upgradeEffect();
-                    } else {
-                        alert('Недостаточно очков!');
-                    }
+                 if (isRecharging) {
+                    alert('Нельзя покупать улучшения во время перезарядки!');
+                    return; // Выходим из функции, если идет перезарядка
+                }   
+                if (score >= upgradeCost) {
+                    score -= upgradeCost;
+                    localStorage.setItem('score', score.toString());
+                    updateScoreDisplay();
+                    upgradeEffect();
+                } else {
+                    alert('Недостаточно очков!');
                 }
             }
+
 
             // Автокликер
             upgrade1.addEventListener('click', () => {
