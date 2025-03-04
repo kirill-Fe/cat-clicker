@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cat-clicker</title>
-    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+    <title>Cat-Clicker</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -27,47 +26,52 @@
             text-align: center;
             margin-bottom: 20px;
             width: 300px;
+            position: relative;
+        }
+
+        #resetButtonAboveTitle {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin-bottom: 5px;
+            /* Расстояние между кнопкой и заголовком */
+            /* display: none; Скрывать не нужно */
+            /* Сделаем кнопку всегда видимой */
+        }
+
+        #resetButtonAboveTitle:hover {
+            background-color: #45a049;
         }
 
         h1 {
             color: #eee;
             margin-bottom: 15px;
+            text-align: center;
         }
 
         #clickArea {
             cursor: pointer;
             outline: none;
-            /* For animation positioning */
+            -webkit-tap-highlight-color: transparent;
+            /* Отключаем подсветку при тапе */
         }
-
-        #clickArea {
-    cursor: pointer;
-    outline: none;
-    -webkit-tap-highlight-color: transparent; /* Отключаем подсветку при тапе */
-}
-
-#clickImage {
-    width: 200px;
-    height: auto;
-    transition: transform 0.1s ease-out;
-    user-select: none; /* Предотвращает выделение текста */
-    -webkit-user-select: none; /* Для Safari */
-    -ms-user-select: none; /* Для Internet Explorer/Edge */
-    pointer-events: none; /* Предотвращает взаимодействие */
-}
 
         #clickImage {
             width: 200px;
             height: auto;
             transition: transform 0.1s ease-out;
             user-select: none;
-            /* Prevent text selection */
+            /* Предотвращает выделение текста */
             -webkit-user-select: none;
-            /* For Safari */
+            /* Для Safari */
             -ms-user-select: none;
-            /* For Internet Explorer/Edge */
+            /* Для Internet Explorer/Edge */
             pointer-events: none;
-            /* Prevent interaction */
+            /* Предотвращает взаимодействие */
         }
 
         #clickImage.clicked {
@@ -110,9 +114,23 @@
         }
 
         #resetContainer {
-            margin-top: 20px;
+            position: fixed;
+            top: 25%;
+            /* Выравниваем по вертикали, занимая пол экрана */
+            left: 0;
+            width: 100%;
+            height: 50%;
+            /* Занимаем пол экрана */
+            background-color: rgba(0, 0, 0, 0.8);
+            /* Полупрозрачный фон */
+            color: white;
             display: none;
             /* Скрываем по умолчанию */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            /* Обеспечиваем отображение поверх всего контента */
         }
 
         #resetContainer button {
@@ -123,7 +141,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            margin: 0 10px;
+            margin: 10px;
         }
 
         #resetContainer button:hover {
@@ -131,8 +149,9 @@
         }
 
         #resetMessage {
-            margin-top: 10px;
-            font-style: italic;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
         }
 
         #footer {
@@ -146,7 +165,8 @@
 <body>
 
     <div class="container">
-        <h1>cat-clicker</h1>
+        <button id="resetButtonAboveTitle">Начать заново</button>
+        <h1>Cat-Clicker</h1>
         <div id="clickArea" tabindex="0">
             <img id="clickImage" src="icon.png" alt="Кликни здесь!" draggable="false">
         </div>
@@ -169,12 +189,12 @@
                 Увеличение лимита кликов (Стоимость: <span id="upgrade3Cost">100</span>)
             </div>
         </div>
+    </div>
 
-        <div id="resetContainer">
-            <p id="resetMessage">Достигнуто 100000 кликов!</p>
-            <button id="continueButton">Продолжить</button>
-            <button id="resetButton">Начать заново</button>
-        </div>
+    <div id="resetContainer">
+        <p id="resetMessage">Достигнуто 100000 кликов!</p>
+        <button id="continueButton">Продолжить</button>
+        <button id="resetButton">Начать заново</button>
     </div>
 
     <script>
@@ -226,6 +246,7 @@
             const resetContainer = document.getElementById('resetContainer');
             const continueButton = document.getElementById('continueButton');
             const resetButton = document.getElementById('resetButton');
+            const resetButtonAboveTitle = document.getElementById('resetButtonAboveTitle');
 
             // Функция обновления отображения счета
             function updateScoreDisplay() {
@@ -422,17 +443,32 @@
 
             // Функция показа кнопок сброса
             function showResetOptions() {
-                resetContainer.style.display = 'block';
+                const hasSeenReset = localStorage.getItem('hasSeenReset');
+                if (!hasSeenReset) {
+                    resetContainer.style.display = 'flex'; // Делаем видимым и используем flexbox
+                }
             }
 
             // Обработчик кнопки "Продолжить"
             continueButton.addEventListener('click', () => {
                 resetContainer.style.display = 'none'; // Скрываем кнопки
+                localStorage.setItem('hasSeenReset', 'true'); // Устанавливаем флаг
+                // resetButtonAboveTitle.style.display = 'block'; // Показываем кнопку "Начать заново"
+                //больше не надо
                 // Можно добавить что-то, если нужно продолжить игру с новыми условиями
             });
 
             // Обработчик кнопки "Начать заново"
             resetButton.addEventListener('click', () => {
+                resetGame();
+            });
+
+            // Обработчик кнопки "Начать заново" в заголовке
+            resetButtonAboveTitle.addEventListener('click', () => {
+                resetGame();
+            });
+
+            function resetGame() {
                 // Сбрасываем все значения
                 score = 0;
                 clickValue = 1;
@@ -457,7 +493,9 @@
 
                 // Скрываем кнопки
                 resetContainer.style.display = 'none';
-            });
+                //   resetButtonAboveTitle.style.display = 'none'; // Скрываем кнопку "Начать заново"
+                //не нужно
+            }
 
             // Инициализация отображения
             updateScoreDisplay();
@@ -477,6 +515,10 @@
                     rechargeClicks();
                 }
             }
+            const hasSeenReset = localStorage.getItem('hasSeenReset');
+            if (score < 100000) {
+                localStorage.removeItem('hasSeenReset');
+            }
 
             // Фокус на элементе clickArea
             clickArea.focus();
@@ -484,4 +526,4 @@
     </script>
 </body>
 
-</html> 
+</html>
