@@ -79,17 +79,18 @@
 
     <script>
 document.addEventListener('DOMContentLoaded', () => {
-    let score = 0;
+    // Загружаем score из localStorage или устанавливаем 0 по умолчанию
+    let score = parseInt(localStorage.getItem('score')) || 0;
     let clickValue = 1;
     let autoclickerInterval;
     let autoclickerCost = 10;
     let upgradedClickCost = 50;
     let clickLimitUpgradeCost = 100;
     let maxClicks = 100;
-    let clicksAvailable = maxClicks;
+    let clicksAvailable = parseInt(localStorage.getItem('clicksAvailable')) || maxClicks;
     let rechargeInterval;
     let rechargeTimeRemaining = 0;
-    let isRecharging = false; // Флаг, указывающий, идет ли перезарядка
+    let isRecharging = false;
 
     const scoreElement = document.getElementById('score');
     const clickArea = document.getElementById('clickArea');
@@ -128,16 +129,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Функция перезарядки кликов
     function rechargeClicks() {
         clicksAvailable = maxClicks;
+        localStorage.setItem('clicksAvailable', clicksAvailable.toString());
         updateClicksAvailableDisplay();
         rechargeTimeRemaining = 0;
         updateRechargeTimerDisplay();
-        isRecharging = false; // Сбрасываем флаг перезарядки
+        isRecharging = false;
     }
 
     // Функция запуска таймера перезарядки
     function startRechargeTimer() {
-        isRecharging = true; // Устанавливаем флаг перезарядки
-        rechargeTimeRemaining = 120; // 2 минуты (120 секунд)
+        isRecharging = true;
+        rechargeTimeRemaining = 120;
         updateRechargeTimerDisplay();
 
         rechargeInterval = setInterval(() => {
@@ -155,7 +157,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleClick() {
         if (clicksAvailable > 0) {
             score += clickValue;
+            localStorage.setItem('score', score.toString()); // Сохраняем score в localStorage
             clicksAvailable--;
+            localStorage.setItem('clicksAvailable', clicksAvailable.toString());
             updateScoreDisplay();
             updateClicksAvailableDisplay();
             if (clicksAvailable === 0) {
@@ -179,9 +183,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Функция для покупки улучшения (общая)
     function buyUpgrade(upgradeCost, upgradeEffect) {
-        if (!isRecharging) { // Проверяем, идет ли перезарядка
+        if (!isRecharging) {
             if (score >= upgradeCost) {
                 score -= upgradeCost;
+                 localStorage.setItem('score', score.toString()); // Сохраняем score в localStorage
                 updateScoreDisplay();
                 upgradeEffect();
             } else {
@@ -191,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Нельзя покупать улучшения во время перезарядки!');
         }
     }
-
 
     // Автокликер
     upgrade1.addEventListener('click', () => {
@@ -203,7 +207,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 autoclickerInterval = setInterval(() => {
                     if (clicksAvailable > 0) {
                         score += clickValue;
+                        localStorage.setItem('score', score.toString()); // Сохраняем score в localStorage
                         clicksAvailable--;
+                        localStorage.setItem('clicksAvailable', clicksAvailable.toString());
                         updateScoreDisplay();
                         updateClicksAvailableDisplay();
                         if (clicksAvailable === 0) {
@@ -232,6 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
         buyUpgrade(clickLimitUpgradeCost, () => {
             maxClicks = Math.ceil(maxClicks * 1.5);
             clicksAvailable = maxClicks;
+            localStorage.setItem('clicksAvailable', clicksAvailable.toString());
             updateClicksAvailableDisplay();
             clickLimitUpgradeCost = Math.ceil(clickLimitUpgradeCost * 2);
             upgrade3CostElement.textContent = clickLimitUpgradeCost;
