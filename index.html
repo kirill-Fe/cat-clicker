@@ -39,6 +39,22 @@
             /* For animation positioning */
         }
 
+        #clickArea {
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent; /* Отключаем подсветку при тапе */
+}
+
+#clickImage {
+    width: 200px;
+    height: auto;
+    transition: transform 0.1s ease-out;
+    user-select: none; /* Предотвращает выделение текста */
+    -webkit-user-select: none; /* Для Safari */
+    -ms-user-select: none; /* Для Internet Explorer/Edge */
+    pointer-events: none; /* Предотвращает взаимодействие */
+}
+
         #clickImage {
             width: 200px;
             height: auto;
@@ -467,4 +483,4 @@
     </script>
 </body>
 
-</html>
+</html> 
