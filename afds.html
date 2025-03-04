@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Простой Кликер</title>
+    <style>
+        body {
+    font-family: sans-serif;
+    background-color: #343333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;  
+    margin: 0;
+}
+
+.container {
+    background-color: #262626;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#clickArea {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    outline: none; /* Убираем рамку при фокусе */
+}
+
+.upgrades {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.upgrade {
+    background-color: #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.upgrade:hover {
+    background-color: #ccc;
+}
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Кликер</h1>
+        <div id="clickArea" tabindex="0">
+            <span id="score">0</span> <br>
+            Кликни здесь!
+            <p>Доступно кликов: <span id="clicksAvailable"></span></p>
+            <p>Перезарядка через: <span id="rechargeTimer"></span></p>
+        </div>
+
+        <div class="upgrades">
+            <h2>Улучшения</h2>
+            <div class="upgrade" id="upgrade1">
+                Автокликер (Стоимость: <span id="upgrade1Cost">10</span>)
+            </div>
+            <div class="upgrade" id="upgrade2">
+                Усиленный клик (Стоимость: <span id="upgrade2Cost">50</span>)
+            </div>
+            <div class="upgrade" id="upgrade3">
+                Увеличение лимита кликов (Стоимость: <span id="upgrade3Cost">100</span>)
+            </div>
+        </div>
+    </div>
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    let score = 0;
+    let clickValue = 1;
+    let autoclickerInterval;
+    let autoclickerCost = 10;
+    let upgradedClickCost = 50;
+    let clickLimitUpgradeCost = 100;
+    let maxClicks = 100;
+    let clicksAvailable = maxClicks;
+    let rechargeInterval;
+    let rechargeTimeRemaining = 0;
+    let isRecharging = false; // Флаг, указывающий, идет ли перезарядка
+
+    const scoreElement = document.getElementById('score');
+    const clickArea = document.getElementById('clickArea');
+    const upgrade1 = document.getElementById('upgrade1');
+    const upgrade2 = document.getElementById('upgrade2');
+    const upgrade3 = document.getElementById('upgrade3');
+    const upgrade1CostElement = document.getElementById('upgrade1Cost');
+    const upgrade2CostElement = document.getElementById('upgrade2Cost');
+    const upgrade3CostElement = document.getElementById('upgrade3Cost');
+    const clicksAvailableElement = document.getElementById('clicksAvailable');
+    const rechargeTimerElement = document.getElementById('rechargeTimer');
+
+    // Функция обновления отображения счета
+    function updateScoreDisplay() {
+        scoreElement.textContent = score;
+    }
+
+    // Функция обновления отображения доступных кликов
+    function updateClicksAvailableDisplay() {
+        clicksAvailableElement.textContent = clicksAvailable;
+    }
+
+    // Функция обновления отображения таймера перезарядки
+    function updateRechargeTimerDisplay() {
+        rechargeTimerElement.textContent = formatTime(rechargeTimeRemaining);
+    }
+
+    // Функция форматирования времени (минуты:секунды)
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+        return `${minutes}:${formattedSeconds}`;
+    }
+
+    // Функция перезарядки кликов
+    function rechargeClicks() {
+        clicksAvailable = maxClicks;
+        updateClicksAvailableDisplay();
+        rechargeTimeRemaining = 0;
+        updateRechargeTimerDisplay();
+        isRecharging = false; // Сбрасываем флаг перезарядки
+    }
+
+    // Функция запуска таймера перезарядки
+    function startRechargeTimer() {
+        isRecharging = true; // Устанавливаем флаг перезарядки
+        rechargeTimeRemaining = 120; // 2 минуты (120 секунд)
+        updateRechargeTimerDisplay();
+
+        rechargeInterval = setInterval(() => {
+            rechargeTimeRemaining--;
+            updateRechargeTimerDisplay();
+
+            if (rechargeTimeRemaining <= 0) {
+                clearInterval(rechargeInterval);
+                rechargeClicks();
+            }
+        }, 1000);
+    }
+
+    // Функция клика
+    function handleClick() {
+        if (clicksAvailable > 0) {
+            score += clickValue;
+            clicksAvailable--;
+            updateScoreDisplay();
+            updateClicksAvailableDisplay();
+            if (clicksAvailable === 0) {
+                startRechargeTimer();
+            }
+        } else {
+            alert('Нет доступных кликов! Подождите перезарядки.');
+        }
+    }
+
+    // Обработчик клика мышкой
+    clickArea.addEventListener('click', handleClick);
+
+    // Обработчик нажатия клавиши
+    clickArea.addEventListener('keydown', (event) => {
+        if (event.code === 'Space') {
+            event.preventDefault();
+            handleClick();
+        }
+    });
+
+    // Функция для покупки улучшения (общая)
+    function buyUpgrade(upgradeCost, upgradeEffect) {
+        if (!isRecharging) { // Проверяем, идет ли перезарядка
+            if (score >= upgradeCost) {
+                score -= upgradeCost;
+                updateScoreDisplay();
+                upgradeEffect();
+            } else {
+                alert('Недостаточно очков!');
+            }
+        } else {
+            alert('Нельзя покупать улучшения во время перезарядки!');
+        }
+    }
+
+
+    // Автокликер
+    upgrade1.addEventListener('click', () => {
+        buyUpgrade(autoclickerCost, () => {
+            autoclickerCost = Math.ceil(autoclickerCost * 1.5);
+            upgrade1CostElement.textContent = autoclickerCost;
+
+            if (!autoclickerInterval) {
+                autoclickerInterval = setInterval(() => {
+                    if (clicksAvailable > 0) {
+                        score += clickValue;
+                        clicksAvailable--;
+                        updateScoreDisplay();
+                        updateClicksAvailableDisplay();
+                        if (clicksAvailable === 0) {
+                            clearInterval(autoclickerInterval);
+                            startRechargeTimer();
+                        }
+                    } else {
+                        clearInterval(autoclickerInterval);
+                    }
+                }, 1000);
+            }
+        });
+    });
+
+    // Улучшение клика
+    upgrade2.addEventListener('click', () => {
+        buyUpgrade(upgradedClickCost, () => {
+            clickValue *= 2;
+            upgradedClickCost = Math.ceil(upgradedClickCost * 2);
+            upgrade2CostElement.textContent = upgradedClickCost;
+        });
+    });
+
+    // Улучшение лимита кликов
+    upgrade3.addEventListener('click', () => {
+        buyUpgrade(clickLimitUpgradeCost, () => {
+            maxClicks = Math.ceil(maxClicks * 1.5);
+            clicksAvailable = maxClicks;
+            updateClicksAvailableDisplay();
+            clickLimitUpgradeCost = Math.ceil(clickLimitUpgradeCost * 2);
+            upgrade3CostElement.textContent = clickLimitUpgradeCost;
+        });
+    });
+
+    // Инициализация отображения
+    updateScoreDisplay();
+    updateClicksAvailableDisplay();
+    updateRechargeTimerDisplay();
+
+    // Фокус на элементе clickArea
+    clickArea.focus();
+});
+    </script>
+</body>
+</html>
