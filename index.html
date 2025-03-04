@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,17 +36,26 @@
         #clickArea {
             cursor: pointer;
             outline: none;
-            position: relative;
+            /* For animation positioning */
         }
 
         #clickImage {
             width: 200px;
             height: auto;
             transition: transform 0.1s ease-out;
+            user-select: none;
+            /* Prevent text selection */
+            -webkit-user-select: none;
+            /* For Safari */
+            -ms-user-select: none;
+            /* For Internet Explorer/Edge */
+            pointer-events: none;
+            /* Prevent interaction */
         }
 
         #clickImage.clicked {
             transform: scale(0.9);
+            /* Scale down when clicked */
         }
 
         .upgrades {
@@ -56,6 +66,7 @@
 
         .upgrade {
             background-color: #555;
+            /* Darker upgrade color */
             color: #fff;
             padding: 12px;
             margin-bottom: 10px;
@@ -70,6 +81,7 @@
 
         .info {
             background-color: #444;
+            /* Darker info color */
             color: #fff;
             padding: 12px;
             border-radius: 5px;
@@ -82,7 +94,8 @@
 
         #resetContainer {
             margin-top: 20px;
-            display: none; /* Скрываем по умолчанию */
+            display: none;
+            /* Скрываем по умолчанию */
         }
 
         #resetContainer button {
@@ -104,14 +117,21 @@
             margin-top: 10px;
             font-style: italic;
         }
+
+        #footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #888;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="container">
         <h1>cat-clicker</h1>
         <div id="clickArea" tabindex="0">
-            <img id="clickImage" src="icon.png" alt="Кликни здесь!">
+            <img id="clickImage" src="icon.png" alt="Кликни здесь!" draggable="false">
         </div>
 
         <div class="info">
@@ -446,4 +466,5 @@
         });
     </script>
 </body>
+
 </html>
