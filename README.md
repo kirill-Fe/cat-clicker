@@ -1,1 +1,1 @@
-# AFDS-clicker
+# afds-clicker
