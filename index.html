@@ -1,66 +1,51 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>afds-clicker</title>
-    <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+    <title>cat-clicker</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             background-color: #222;
-            /* Darker background */
             color: #fff;
-            /* Light text color */
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            /* Add some padding */
         }
 
         .container {
             background-color: #333;
-            /* Darker container */
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            /* Deeper shadow */
             text-align: center;
             margin-bottom: 20px;
             width: 300px;
-            /* Set a fixed width */
         }
 
         h1 {
             color: #eee;
-            /* Lighter header color */
             margin-bottom: 15px;
         }
 
         #clickArea {
             cursor: pointer;
             outline: none;
-            /* Убираем рамку при фокусе */
             position: relative;
-            /* For animation positioning */
         }
 
         #clickImage {
             width: 200px;
-            /* Задайте желаемую ширину */
             height: auto;
-            /* Автоматическая высота */
             transition: transform 0.1s ease-out;
-            /* Smooth transition for animation */
         }
 
         #clickImage.clicked {
             transform: scale(0.9);
-            /* Scale down when clicked */
         }
 
         .upgrades {
@@ -71,7 +56,6 @@
 
         .upgrade {
             background-color: #555;
-            /* Darker upgrade color */
             color: #fff;
             padding: 12px;
             margin-bottom: 10px;
@@ -86,7 +70,6 @@
 
         .info {
             background-color: #444;
-            /* Darker info color */
             color: #fff;
             padding: 12px;
             border-radius: 5px;
@@ -96,13 +79,37 @@
         .info p {
             margin: 5px 0;
         }
+
+        #resetContainer {
+            margin-top: 20px;
+            display: none; /* Скрываем по умолчанию */
+        }
+
+        #resetContainer button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+
+        #resetContainer button:hover {
+            background-color: #45a049;
+        }
+
+        #resetMessage {
+            margin-top: 10px;
+            font-style: italic;
+        }
     </style>
 </head>
-
 <body>
 
     <div class="container">
-        <h1>afds click</h1>
+        <h1>cat-clicker</h1>
         <div id="clickArea" tabindex="0">
             <img id="clickImage" src="icon.png" alt="Кликни здесь!">
         </div>
@@ -112,7 +119,6 @@
             <p>Доступно кликов: <span id="clicksAvailable"></span></p>
             <p>Перезарядка через: <span id="rechargeTimer"></span></p>
         </div>
-
 
         <div class="upgrades">
             <h2>Улучшения</h2>
@@ -125,6 +131,12 @@
             <div class="upgrade" id="upgrade3">
                 Увеличение лимита кликов (Стоимость: <span id="upgrade3Cost">100</span>)
             </div>
+        </div>
+
+        <div id="resetContainer">
+            <p id="resetMessage">Достигнуто 100000 кликов!</p>
+            <button id="continueButton">Продолжить</button>
+            <button id="resetButton">Начать заново</button>
         </div>
     </div>
 
@@ -142,20 +154,26 @@
 
             // Загружаем и вычисляем время перезарядки
             let isRecharging = localStorage.getItem('isRecharging') === 'true';
-            let rechargeStartTime = parseInt(localStorage.getItem('rechargeStartTime')) || 0; // Время начала перезарядки
+            let rechargeEndTime = parseInt(localStorage.getItem('rechargeEndTime')) || 0; // Время окончания перезарядки
             let rechargeTimeRemaining = 0;
 
             if (isRecharging) {
                 let now = Date.now();
-                rechargeTimeRemaining = Math.max(0, 120 - Math.floor((now - rechargeStartTime) / 1000)); // Вычисляем оставшееся время
+                rechargeTimeRemaining = Math.max(0, Math.ceil((rechargeEndTime - now) / 1000)); // Вычисляем оставшееся время
                 clicksAvailable = 0; // Клики недоступны при перезарядке
+
+                // Если время перезарядки уже прошло, то сбрасываем
+                if (rechargeTimeRemaining <= 0) {
+                    isRecharging = false;
+                    localStorage.removeItem('isRecharging');
+                    localStorage.removeItem('rechargeEndTime');
+                }
             } else {
                 clicksAvailable = parseInt(localStorage.getItem('clicksAvailable')) || maxClicks;
             }
 
             let autoclickerInterval;
             let rechargeInterval;
-
 
             const scoreElement = document.getElementById('score');
             const clickArea = document.getElementById('clickArea');
@@ -168,6 +186,9 @@
             const upgrade3CostElement = document.getElementById('upgrade3Cost');
             const clicksAvailableElement = document.getElementById('clicksAvailable');
             const rechargeTimerElement = document.getElementById('rechargeTimer');
+            const resetContainer = document.getElementById('resetContainer');
+            const continueButton = document.getElementById('continueButton');
+            const resetButton = document.getElementById('resetButton');
 
             // Функция обновления отображения счета
             function updateScoreDisplay() {
@@ -201,16 +222,17 @@
                 updateRechargeTimerDisplay();
                 isRecharging = false;
                 localStorage.removeItem('isRecharging'); // Удаляем isRecharging при завершении
-                localStorage.removeItem('rechargeStartTime'); // Удаляем время начала перезарядки
+                localStorage.removeItem('rechargeEndTime'); // Удаляем время окончания перезарядки
             }
 
             // Функция запуска таймера перезарядки
             function startRechargeTimer() {
                 isRecharging = true;
                 let now = Date.now(); // Текущее время в миллисекундах
+                let endTime = now + 120000; // 120000 миллисекунд = 2 минуты
                 localStorage.setItem('isRecharging', 'true');
-                localStorage.setItem('rechargeStartTime', now.toString());
-                rechargeStartTime = now; // Сохраняем для использования в функции
+                localStorage.setItem('rechargeEndTime', endTime.toString());
+                rechargeEndTime = endTime; // Сохраняем для использования в функции
                 rechargeTimeRemaining = 120;
                 updateRechargeTimerDisplay();
 
@@ -225,6 +247,30 @@
                 }, 1000);
             }
 
+            function updateImage() {
+                if (score >= 90000) {
+                    clickImage.src = "image9.png";
+                } else if (score >= 80000) {
+                    clickImage.src = "image8.png";
+                } else if (score >= 70000) {
+                    clickImage.src = "image7.png";
+                } else if (score >= 60000) {
+                    clickImage.src = "image6.png";
+                } else if (score >= 50000) {
+                    clickImage.src = "image5.png";
+                } else if (score >= 40000) {
+                    clickImage.src = "image4.png";
+                } else if (score >= 30000) {
+                    clickImage.src = "image3.png";
+                } else if (score >= 20000) {
+                    clickImage.src = "image2.png";
+                } else if (score >= 10000) {
+                    clickImage.src = "image1.png";
+                } else {
+                    clickImage.src = "icon.png";
+                }
+            }
+
             // Функция клика
             function handleClick() {
                 if (clicksAvailable > 0 && !isRecharging) {
@@ -234,22 +280,25 @@
                     localStorage.setItem('clicksAvailable', clicksAvailable.toString());
                     updateScoreDisplay();
                     updateClicksAvailableDisplay();
+                    updateImage();
+
                     if (clicksAvailable === 0) {
                         startRechargeTimer();
                     }
-
-                   // Добавляем анимацию клика
-                   clickImage.classList.add('clicked');
-                   setTimeout(() => {
-                       clickImage.classList.remove('clicked');
-                   }, 100); // Убираем класс через 100мс
+                    if (score >= 100000) {
+                        showResetOptions();
+                    }
+                    // Добавляем анимацию клика
+                    clickImage.classList.add('clicked');
+                    setTimeout(() => {
+                        clickImage.classList.remove('clicked');
+                    }, 100); // Убираем класс через 100мс
                 } else {
                     if (isRecharging) {
                         alert('Нет доступных кликов! Подождите перезарядки.');
                     } else {
                         alert('Нет доступных кликов! Подождите перезарядки.');
                     }
-
                 }
             }
 
@@ -296,6 +345,7 @@
                                 localStorage.setItem('clicksAvailable', clicksAvailable.toString());
                                 updateScoreDisplay();
                                 updateClicksAvailableDisplay();
+                                updateImage(); // Обновление картинки в автокликере
                                 if (clicksAvailable === 0) {
                                     clearInterval(autoclickerInterval);
                                     startRechargeTimer();
@@ -333,6 +383,45 @@
                 });
             });
 
+            // Функция показа кнопок сброса
+            function showResetOptions() {
+                resetContainer.style.display = 'block';
+            }
+
+            // Обработчик кнопки "Продолжить"
+            continueButton.addEventListener('click', () => {
+                resetContainer.style.display = 'none'; // Скрываем кнопки
+                // Можно добавить что-то, если нужно продолжить игру с новыми условиями
+            });
+
+            // Обработчик кнопки "Начать заново"
+            resetButton.addEventListener('click', () => {
+                // Сбрасываем все значения
+                score = 0;
+                clickValue = 1;
+                autoclickerCost = 10;
+                upgradedClickCost = 50;
+                clickLimitUpgradeCost = 100;
+                maxClicks = 100;
+                clicksAvailable = maxClicks;
+                isRecharging = false;
+
+                // Очищаем localStorage
+                localStorage.clear();
+
+                // Обновляем отображение
+                updateScoreDisplay();
+                updateClicksAvailableDisplay();
+                updateRechargeTimerDisplay();
+                upgrade1CostElement.textContent = autoclickerCost;
+                upgrade2CostElement.textContent = upgradedClickCost;
+                upgrade3CostElement.textContent = clickLimitUpgradeCost;
+                updateImage(); // Обновляем картинку
+
+                // Скрываем кнопки
+                resetContainer.style.display = 'none';
+            });
+
             // Инициализация отображения
             updateScoreDisplay();
             updateClicksAvailableDisplay();
@@ -340,10 +429,16 @@
             upgrade1CostElement.textContent = autoclickerCost;
             upgrade2CostElement.textContent = upgradedClickCost;
             upgrade3CostElement.textContent = clickLimitUpgradeCost;
+            updateImage();
 
             // Запускаем таймер, если он был активен
             if (isRecharging) {
-                startRechargeTimer();
+                let now = Date.now();
+                if (rechargeEndTime > now) {
+                    startRechargeTimer();
+                } else {
+                    rechargeClicks();
+                }
             }
 
             // Фокус на элементе clickArea
@@ -351,5 +446,4 @@
         });
     </script>
 </body>
-
 </html>
