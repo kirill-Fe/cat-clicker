@@ -79,18 +79,32 @@
 
     <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Загружаем score из localStorage или устанавливаем 0 по умолчанию
+    // Загружаем значения из localStorage
     let score = parseInt(localStorage.getItem('score')) || 0;
-    let clickValue = 1;
-    let autoclickerInterval;
-    let autoclickerCost = 10;
-    let upgradedClickCost = 50;
-    let clickLimitUpgradeCost = 100;
-    let maxClicks = 100;
-    let clicksAvailable = parseInt(localStorage.getItem('clicksAvailable')) || maxClicks;
-    let rechargeInterval;
+    let clickValue = parseInt(localStorage.getItem('clickValue')) || 1;
+    let autoclickerCost = parseInt(localStorage.getItem('autoclickerCost')) || 10;
+    let upgradedClickCost = parseInt(localStorage.getItem('upgradedClickCost')) || 50;
+    let clickLimitUpgradeCost = parseInt(localStorage.getItem('clickLimitUpgradeCost')) || 100;
+    let maxClicks = parseInt(localStorage.getItem('maxClicks')) || 100;
+
+    let clicksAvailable = maxClicks;
+
+     // Загружаем и вычисляем время перезарядки
+    let isRecharging = localStorage.getItem('isRecharging') === 'true';
+    let rechargeStartTime = parseInt(localStorage.getItem('rechargeStartTime')) || 0; // Время начала перезарядки
     let rechargeTimeRemaining = 0;
-    let isRecharging = false;
+
+    if (isRecharging) {
+        let now = Date.now();
+        rechargeTimeRemaining = Math.max(0, 120 - Math.floor((now - rechargeStartTime) / 1000)); // Вычисляем оставшееся время
+        clicksAvailable = 0; // Клики недоступны при перезарядке
+    } else {
+       clicksAvailable = parseInt(localStorage.getItem('clicksAvailable')) || maxClicks;
+    }
+
+    let autoclickerInterval;
+    let rechargeInterval;
+    
 
     const scoreElement = document.getElementById('score');
     const clickArea = document.getElementById('clickArea');
@@ -126,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${minutes}:${formattedSeconds}`;
     }
 
-    // Функция перезарядки кликов
+   // Функция перезарядки кликов
     function rechargeClicks() {
         clicksAvailable = maxClicks;
         localStorage.setItem('clicksAvailable', clicksAvailable.toString());
@@ -134,11 +148,17 @@ document.addEventListener('DOMContentLoaded', () => {
         rechargeTimeRemaining = 0;
         updateRechargeTimerDisplay();
         isRecharging = false;
+        localStorage.removeItem('isRecharging'); // Удаляем isRecharging при завершении
+        localStorage.removeItem('rechargeStartTime'); // Удаляем время начала перезарядки
     }
 
     // Функция запуска таймера перезарядки
     function startRechargeTimer() {
         isRecharging = true;
+        let now = Date.now(); // Текущее время в миллисекундах
+        localStorage.setItem('isRecharging', 'true');
+        localStorage.setItem('rechargeStartTime', now.toString());
+        rechargeStartTime = now; // Сохраняем для использования в функции
         rechargeTimeRemaining = 120;
         updateRechargeTimerDisplay();
 
@@ -155,9 +175,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Функция клика
     function handleClick() {
-        if (clicksAvailable > 0) {
+        if (clicksAvailable > 0 && !isRecharging) {
             score += clickValue;
-            localStorage.setItem('score', score.toString()); // Сохраняем score в localStorage
+            localStorage.setItem('score', score.toString());
             clicksAvailable--;
             localStorage.setItem('clicksAvailable', clicksAvailable.toString());
             updateScoreDisplay();
@@ -166,7 +186,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 startRechargeTimer();
             }
         } else {
-            alert('Нет доступных кликов! Подождите перезарядки.');
+            if(isRecharging){
+              alert('Нет доступных кликов! Подождите перезарядки.');
+            } else {
+              alert('Нет доступных кликов! Подождите перезарядки.');
+            }
+
         }
     }
 
@@ -186,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isRecharging) {
             if (score >= upgradeCost) {
                 score -= upgradeCost;
-                 localStorage.setItem('score', score.toString()); // Сохраняем score в localStorage
+                localStorage.setItem('score', score.toString());
                 updateScoreDisplay();
                 upgradeEffect();
             } else {
@@ -201,13 +226,14 @@ document.addEventListener('DOMContentLoaded', () => {
     upgrade1.addEventListener('click', () => {
         buyUpgrade(autoclickerCost, () => {
             autoclickerCost = Math.ceil(autoclickerCost * 1.5);
+            localStorage.setItem('autoclickerCost', autoclickerCost.toString());
             upgrade1CostElement.textContent = autoclickerCost;
 
             if (!autoclickerInterval) {
                 autoclickerInterval = setInterval(() => {
-                    if (clicksAvailable > 0) {
+                    if (clicksAvailable > 0 && !isRecharging) {
                         score += clickValue;
-                        localStorage.setItem('score', score.toString()); // Сохраняем score в localStorage
+                        localStorage.setItem('score', score.toString());
                         clicksAvailable--;
                         localStorage.setItem('clicksAvailable', clicksAvailable.toString());
                         updateScoreDisplay();
@@ -228,7 +254,9 @@ document.addEventListener('DOMContentLoaded', () => {
     upgrade2.addEventListener('click', () => {
         buyUpgrade(upgradedClickCost, () => {
             clickValue *= 2;
+            localStorage.setItem('clickValue', clickValue.toString());
             upgradedClickCost = Math.ceil(upgradedClickCost * 2);
+            localStorage.setItem('upgradedClickCost', upgradedClickCost.toString());
             upgrade2CostElement.textContent = upgradedClickCost;
         });
     });
@@ -237,10 +265,12 @@ document.addEventListener('DOMContentLoaded', () => {
     upgrade3.addEventListener('click', () => {
         buyUpgrade(clickLimitUpgradeCost, () => {
             maxClicks = Math.ceil(maxClicks * 1.5);
+            localStorage.setItem('maxClicks', maxClicks.toString());
             clicksAvailable = maxClicks;
             localStorage.setItem('clicksAvailable', clicksAvailable.toString());
             updateClicksAvailableDisplay();
             clickLimitUpgradeCost = Math.ceil(clickLimitUpgradeCost * 2);
+            localStorage.setItem('clickLimitUpgradeCost', clickLimitUpgradeCost.toString());
             upgrade3CostElement.textContent = clickLimitUpgradeCost;
         });
     });
@@ -249,6 +279,14 @@ document.addEventListener('DOMContentLoaded', () => {
     updateScoreDisplay();
     updateClicksAvailableDisplay();
     updateRechargeTimerDisplay();
+    upgrade1CostElement.textContent = autoclickerCost;
+    upgrade2CostElement.textContent = upgradedClickCost;
+    upgrade3CostElement.textContent = clickLimitUpgradeCost;
+
+    // Запускаем таймер, если он был активен
+    if (isRecharging) {
+        startRechargeTimer();
+    }
 
     // Фокус на элементе clickArea
     clickArea.focus();
