@@ -39,9 +39,6 @@
             cursor: pointer;
             font-size: 0.8em;
             margin-bottom: 5px;
-            /* Расстояние между кнопкой и заголовком */
-            /* display: none; Скрывать не нужно */
-            /* Сделаем кнопку всегда видимой */
         }
 
         #resetButtonAboveTitle:hover {
@@ -58,7 +55,6 @@
             cursor: pointer;
             outline: none;
             -webkit-tap-highlight-color: transparent;
-            /* Отключаем подсветку при тапе */
         }
 
         #clickImage {
@@ -66,18 +62,13 @@
             height: auto;
             transition: transform 0.1s ease-out;
             user-select: none;
-            /* Предотвращает выделение текста */
             -webkit-user-select: none;
-            /* Для Safari */
             -ms-user-select: none;
-            /* Для Internet Explorer/Edge */
             pointer-events: none;
-            /* Предотвращает взаимодействие */
         }
 
         #clickImage.clicked {
             transform: scale(0.9);
-            /* Scale down when clicked */
         }
 
         .upgrades {
@@ -88,7 +79,6 @@
 
         .upgrade {
             background-color: #555;
-            /* Darker upgrade color */
             color: #fff;
             padding: 12px;
             margin-bottom: 10px;
@@ -103,7 +93,6 @@
 
         .info {
             background-color: #444;
-            /* Darker info color */
             color: #fff;
             padding: 12px;
             border-radius: 5px;
@@ -117,21 +106,16 @@
         #resetContainer {
             position: fixed;
             top: 25%;
-            /* Выравниваем по вертикали, занимая пол экрана */
             left: 0;
             width: 100%;
             height: 50%;
-            /* Занимаем пол экрана */
             background-color: rgba(0, 0, 0, 0.8);
-            /* Полупрозрачный фон */
             color: white;
             display: none;
-            /* Скрываем по умолчанию */
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            /* Обеспечиваем отображение поверх всего контента */
         }
 
         #resetContainer button {
@@ -153,6 +137,50 @@
             margin-bottom: 20px;
             font-size: 1.5em;
             text-align: center;
+        }
+
+        #confirmationOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1002;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        #confirmationOverlay button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 10px;
+        }
+
+        #confirmationOverlay #confirmReset {
+            background-color: #45a049;
+            color: white;
+        }
+
+        #confirmationOverlay #confirmReset:hover {
+            background-color: #45a049;
+        }
+
+        #confirmationOverlay #cancelReset {
+            background-color: #d32f2f;
+            color: white;
+        }
+
+        #confirmationOverlay #cancelReset:hover {
+            background-color: #d32f2f;
         }
 
         #footer {
@@ -196,6 +224,13 @@
         <p id="resetMessage">Достигнуто 100000 кликов!</p>
         <button id="continueButton">Продолжить</button>
         <button id="resetButton">Начать заново</button>
+    </div>
+
+    <!-- Оверлей подтверждения сброса -->
+    <div id="confirmationOverlay">
+        <p>Вы уверены, что хотите начать заново?</p>
+        <button id="confirmReset">Да</button>
+        <button id="cancelReset">Нет</button>
     </div>
 
     <script>
@@ -248,6 +283,9 @@
             const continueButton = document.getElementById('continueButton');
             const resetButton = document.getElementById('resetButton');
             const resetButtonAboveTitle = document.getElementById('resetButtonAboveTitle');
+            const confirmationOverlay = document.getElementById('confirmationOverlay');
+            const confirmResetButton = document.getElementById('confirmReset');
+            const cancelResetButton = document.getElementById('cancelReset');
 
             // Функция обновления отображения счета
             function updateScoreDisplay() {
@@ -352,12 +390,6 @@
                     setTimeout(() => {
                         clickImage.classList.remove('clicked');
                     }, 100); // Убираем класс через 100мс
-                } else {
-                    if (isRecharging) {
-                        alert('Нет доступных кликов! Подождите перезарядки.');
-                    } else {
-                        alert('Нет доступных кликов! Подождите перезарядки.');
-                    }
                 }
             }
 
@@ -383,8 +415,6 @@
                     } else {
                         alert('Недостаточно очков!');
                     }
-                } else {
-                    alert('Нельзя покупать улучшения во время перезарядки!');
                 }
             }
 
@@ -459,15 +489,25 @@
                 // Можно добавить что-то, если нужно продолжить игру с новыми условиями
             });
 
-            // Обработчик кнопки "Начать заново"
-            resetButton.addEventListener('click', () => {
-                resetGame();
+            // Функция подтверждения сброса
+            function showConfirmation() {
+                confirmationOverlay.style.display = 'flex';
+            }
+
+            // Обработчик отмены сброса
+            cancelResetButton.addEventListener('click', () => {
+                confirmationOverlay.style.display = 'none';
             });
 
-            // Обработчик кнопки "Начать заново" в заголовке
-            resetButtonAboveTitle.addEventListener('click', () => {
+            // Обработчик подтверждения сброса
+            confirmResetButton.addEventListener('click', () => {
                 resetGame();
+                confirmationOverlay.style.display = 'none';
             });
+
+            // Обработчики кнопки "Начать заново"
+            resetButton.addEventListener('click', showConfirmation);
+            resetButtonAboveTitle.addEventListener('click', showConfirmation);
 
             function resetGame() {
                 // Сбрасываем все значения
@@ -479,6 +519,14 @@
                 maxClicks = 100;
                 clicksAvailable = maxClicks;
                 isRecharging = false;
+
+                // Останавливаем таймеры
+                clearInterval(rechargeInterval);
+                if (autoclickerInterval) {
+                    clearInterval(autoclickerInterval);
+                }
+                rechargeTimeRemaining = 0;
+                updateRechargeTimerDisplay();
 
                 // Очищаем localStorage
                 localStorage.clear();
@@ -494,8 +542,7 @@
 
                 // Скрываем кнопки
                 resetContainer.style.display = 'none';
-                //   resetButtonAboveTitle.style.display = 'none'; // Скрываем кнопку "Начать заново"
-                //не нужно
+
             }
 
             // Инициализация отображения
@@ -526,5 +573,4 @@
         });
     </script>
 </body>
-
 </html>
