@@ -82,6 +82,7 @@
         cursor: pointer;
         outline: none;
         -webkit-tap-highlight-color: transparent;
+        perspective: 500px; /* Важно для 3D */
     }
 
     #clickImage {
@@ -92,10 +93,13 @@
         -webkit-user-select: none;
         -ms-user-select: none;
         pointer-events: none;
+        transform-style: preserve-3d; /* Важно для 3D */
     }
 
     #clickImage.clicked {
-        transform: scale(0.9);
+        /*transform: scale(0.9);*/
+        transform: translateZ(-20px); /* Сдвиг вглубь */
+        transition: transform 0.05s ease-out; /* Более быстрая анимация */
     }
 
     .upgrades {
@@ -247,6 +251,29 @@
         /*Убираем эффект подъема при нажатии*/
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+
+    /* Стили для разлетающихся картинок */
+    .particle {
+        position: absolute;
+        width: 30px;
+        height: auto;
+        animation: flyAway 1s ease-out forwards;
+    }
+
+    @keyframes flyAway {
+        0% {
+            opacity: 1;
+            transform: translate(0, 0);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translate(
+                calc(var(--randomX) * 1px),
+                calc(var(--randomY) * 1px)
+            );
+        }
+    }
     </style>
 </head>
 
@@ -347,6 +374,7 @@
         const confirmationOverlay = document.getElementById('confirmationOverlay');
         const confirmResetButton = document.getElementById('confirmReset');
         const cancelResetButton = document.getElementById('cancelReset');
+        const container = document.querySelector('.container'); // Получаем контейнер
 
         // Функция обновления отображения счета
         function updateScoreDisplay() {
@@ -450,7 +478,42 @@
                 clickImage.classList.add('clicked');
                 setTimeout(() => {
                     clickImage.classList.remove('clicked');
-                }, 100); // Убираем класс через 100мс
+                }, 50); // Уменьшаем задержку
+
+                // Добавляем эффект разлетающихся картинок
+                createParticles(5); // Создаем 5 частиц
+            }
+        }
+
+        function createParticles(numParticles) {
+            const imageSrc = clickImage.src; // Путь к текущей картинке
+            const imageWidth = 30; // Ширина маленькой картинки (можно менять)
+            const imageHeight = 'auto';
+            for (let i = 0; i < numParticles; i++) {
+                const particle = document.createElement('img');
+                particle.src = imageSrc;
+                particle.classList.add('particle');
+                particle.style.width = `${imageWidth}px`;
+                particle.style.height = imageHeight;
+
+                // Случайные координаты для разлета
+                const randomX = Math.random() * 200 - 100; // От -100 до 100
+                const randomY = Math.random() * 200 - 100; // От -100 до 100
+                particle.style.setProperty('--randomX', randomX.toString());
+                particle.style.setProperty('--randomY', randomY.toString());
+
+                // Начальное положение - центр кликнутой картинки
+                const rect = clickImage.getBoundingClientRect();
+                particle.style.left = `${rect.left + rect.width / 2 - imageWidth / 2 -container.getBoundingClientRect().left}px`;
+                particle.style.top = `${rect.top + rect.height / 2 - imageWidth / 2 -container.getBoundingClientRect().top}px`;
+
+                // Добавляем частицу в контейнер
+                container.appendChild(particle);
+
+                // Удаляем частицу после завершения анимации
+                particle.addEventListener('animationend', () => {
+                    particle.remove();
+                });
             }
         }
 
