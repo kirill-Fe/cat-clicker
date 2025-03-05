@@ -7,203 +7,246 @@
     <title>Cat-Clicker</title>
     <link rel="shortcut icon" href="icon.png" type="image/x-icon">
     <!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
-   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-   m[i].l=1*new Date();
-   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+    <script type="text/javascript">
+    (function(m, e, t, r, i, k, a) {
+        m[i] = m[i] || function() {
+            (m[i].a = m[i].a || []).push(arguments)
+        };
+        m[i].l = 1 * new Date();
+        for (var j = 0; j < document.scripts.length; j++) {
+            if (document.scripts[j].src === r) {
+                return;
+            }
+        }
+        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode
+            .insertBefore(k, a)
+    })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-   ym(100186518, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true
-   });
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/100186518" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
+    ym(100186518, "init", {
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true
+    });
+    </script>
+    <noscript>
+        <div><img src="" style="position:absolute; left:-9999px;" alt="" /></div>
+    </noscript>
+    <!-- /Yandex.Metrika counter -->
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #222;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #222;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+    }
 
-        .container {
-            background-color: #333;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            margin-bottom: 20px;
-            width: 300px;
-            position: relative;
-        }
+    .container {
+        background-color: #333;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        margin-bottom: 20px;
+        width: 300px;
+        position: relative;
+    }
 
-        #resetButtonAboveTitle {
-            background-color: #4CAF50;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8em;
-            margin-bottom: 5px;
-        }
+    #resetButtonAboveTitle {
+        background-color: #4CAF50;
+        color: white;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8em;
+        margin-bottom: 5px;
+        transition: background-color 0.3s ease;
+    }
 
-        #resetButtonAboveTitle:hover {
-            background-color: #45a049;
-        }
+    #resetButtonAboveTitle:hover {
+        background-color: #45a049;
+    }
 
-        h1 {
-            color: #eee;
-            margin-bottom: 15px;
-            text-align: center;
-        }
+    h1 {
+        color: #eee;
+        margin-bottom: 15px;
+        text-align: center;
+    }
 
-        #clickArea {
-            cursor: pointer;
-            outline: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+    #clickArea {
+        cursor: pointer;
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+    }
 
-        #clickImage {
-            width: 200px;
-            height: auto;
-            transition: transform 0.1s ease-out;
-            user-select: none;
-            -webkit-user-select: none;
-            -ms-user-select: none;
-            pointer-events: none;
-        }
+    #clickImage {
+        width: 200px;
+        height: auto;
+        transition: transform 0.1s ease-out;
+        user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        pointer-events: none;
+    }
 
-        #clickImage.clicked {
-            transform: scale(0.9);
-        }
+    #clickImage.clicked {
+        transform: scale(0.9);
+    }
 
-        .upgrades {
-            margin-top: 20px;
-            text-align: left;
-            width: 100%;
-        }
+    .upgrades {
+        margin-top: 20px;
+        text-align: left;
+        width: 100%;
+    }
 
-        .upgrade {
-            background-color: #555;
-            color: #fff;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-        }
+    .upgrade {
+        background-color: #555;
+        color: #fff;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+    }
 
-        .upgrade:hover {
-            background-color: #777;
-        }
+    .upgrade:hover {
+        background-color: #777;
+    }
 
-        .info {
-            background-color: #444;
-            color: #fff;
-            padding: 12px;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
+    .info {
+        background-color: #444;
+        color: #fff;
+        padding: 12px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
 
-        .info p {
-            margin: 5px 0;
-        }
+    .info p {
+        margin: 5px 0;
+    }
 
-        #resetContainer {
-            position: fixed;
-            top: 25%;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
+    #resetContainer {
+        position: fixed;
+        top: 25%;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
 
-        #resetContainer button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 10px;
-        }
+    #resetContainer button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 10px;
+    }
 
-        #resetContainer button:hover {
-            background-color: #45a049;
-        }
+    #resetContainer button:hover {
+        background-color: #45a049;
+    }
 
-        #resetMessage {
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            text-align: center;
-        }
+    #resetMessage {
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        text-align: center;
+    }
 
-        #confirmationOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1002;
-            font-size: 1.5em;
-            text-align: center;
-        }
+    #confirmationOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1002;
+        font-size: 1.5em;
+        text-align: center;
+    }
 
-        #confirmationOverlay button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1em;
-            margin: 10px;
-        }
+    #confirmationOverlay button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+        margin: 10px;
+    }
 
-        #confirmationOverlay #confirmReset {
-            background-color: #45a049;
-            color: white;
-        }
+    #confirmationOverlay #confirmReset {
+        background-color: #45a049;
+        color: white;
+    }
 
-        #confirmationOverlay #confirmReset:hover {
-            background-color: #45a049;
-        }
+    #confirmationOverlay #confirmReset:hover {
+        background-color: #45a049;
+    }
 
-        #confirmationOverlay #cancelReset {
-            background-color: #d32f2f;
-            color: white;
-        }
+    #confirmationOverlay #cancelReset {
+        background-color: #d32f2f;
+        color: white;
+    }
 
-        #confirmationOverlay #cancelReset:hover {
-            background-color: #d32f2f;
-        }
+    #confirmationOverlay #cancelReset:hover {
+        background-color: #d32f2f;
+    }
 
-        #footer {
-            margin-top: 20px;
-            font-size: 0.8em;
-            color: #888;
-        }
+    #footer {
+        margin-top: 20px;
+        font-size: 0.8em;
+        color: #888;
+    }
+
+    /*Стили для кнопки*/
+    #projectsButton {
+        background-color: #3498db;
+        /*Синий*/
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin-top: 20px;
+        cursor: pointer;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, transform 0.1s ease;
+    }
+
+    #projectsButton:hover {
+        background-color: #2980b9;
+        /*Темно-синий*/
+        transform: translateY(-2px);
+        /*Небольшой эффект подъема*/
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #projectsButton:active {
+        transform: translateY(0);
+        /*Убираем эффект подъема при нажатии*/
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
     </style>
 </head>
 
@@ -213,7 +256,7 @@
         <button id="resetButtonAboveTitle">Начать заново</button>
         <h1>Cat-Clicker</h1>
         <div id="clickArea" tabindex="0">
-            <img id="clickImage" src="icon.png" alt="Кликни здесь!" draggable="false">
+            <img id="clickImage" src="icon.png" alt=" в" draggable="false">
         </div>
 
         <div class="info">
@@ -234,6 +277,8 @@
                 Увеличение лимита кликов (Стоимость: <span id="upgrade3Cost">100</span>)
             </div>
         </div>
+        <!--Кнопка "К проектам"-->
+        <a href="https://Kirill-Fe.github.io/projects" id="projectsButton">К проектам</a>
     </div>
 
     <div id="resetContainer">
@@ -250,346 +295,347 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Загружаем значения из localStorage
-            let score = parseInt(localStorage.getItem('score')) || 0;
-            let clickValue = parseInt(localStorage.getItem('clickValue')) || 1;
-            let autoclickerCost = parseInt(localStorage.getItem('autoclickerCost')) || 10;
-            let upgradedClickCost = parseInt(localStorage.getItem('upgradedClickCost')) || 50;
-            let clickLimitUpgradeCost = parseInt(localStorage.getItem('clickLimitUpgradeCost')) || 100;
-            let maxClicks = parseInt(localStorage.getItem('maxClicks')) || 100;
+    document.addEventListener('DOMContentLoaded', () => {
+        // Загружаем значения из localStorage
+        let score = parseInt(localStorage.getItem('score')) || 0;
+        let clickValue = parseInt(localStorage.getItem('clickValue')) || 1;
+        let autoclickerCost = parseInt(localStorage.getItem('autoclickerCost')) || 10;
+        let upgradedClickCost = parseInt(localStorage.getItem('upgradedClickCost')) || 50;
+        let clickLimitUpgradeCost = parseInt(localStorage.getItem('clickLimitUpgradeCost')) || 100;
+        let maxClicks = parseInt(localStorage.getItem('maxClicks')) || 100;
 
-            let clicksAvailable = maxClicks;
+        let clicksAvailable = maxClicks;
 
-            // Загружаем и вычисляем время перезарядки
-            let isRecharging = localStorage.getItem('isRecharging') === 'true';
-            let rechargeEndTime = parseInt(localStorage.getItem('rechargeEndTime')) || 0; // Время окончания перезарядки
-            let rechargeTimeRemaining = 0;
+        // Загружаем и вычисляем время перезарядки
+        let isRecharging = localStorage.getItem('isRecharging') === 'true';
+        let rechargeEndTime = parseInt(localStorage.getItem('rechargeEndTime')) || 0; // Время окончания перезарядки
+        let rechargeTimeRemaining = 0;
 
-            if (isRecharging) {
-                let now = Date.now();
-                rechargeTimeRemaining = Math.max(0, Math.ceil((rechargeEndTime - now) / 1000)); // Вычисляем оставшееся время
-                clicksAvailable = 0; // Клики недоступны при перезарядке
+        if (isRecharging) {
+            let now = Date.now();
+            rechargeTimeRemaining = Math.max(0, Math.ceil((rechargeEndTime - now) / 1000)); // Вычисляем оставшееся время
+            clicksAvailable = 0; // Клики недоступны при перезарядке
 
-                // Если время перезарядки уже прошло, то сбрасываем
+            // Если время перезарядки уже прошло, то сбрасываем
+            if (rechargeTimeRemaining <= 0) {
+                isRecharging = false;
+                localStorage.removeItem('isRecharging');
+                localStorage.removeItem('rechargeEndTime');
+            }
+        } else {
+            clicksAvailable = parseInt(localStorage.getItem('clicksAvailable')) || maxClicks;
+        }
+
+        let autoclickerInterval;
+        let rechargeInterval;
+
+        const scoreElement = document.getElementById('score');
+        const clickArea = document.getElementById('clickArea');
+        const clickImage = document.getElementById('clickImage');
+        const upgrade1 = document.getElementById('upgrade1');
+        const upgrade2 = document.getElementById('upgrade2');
+        const upgrade3 = document.getElementById('upgrade3');
+        const upgrade1CostElement = document.getElementById('upgrade1Cost');
+        const upgrade2CostElement = document.getElementById('upgrade2Cost');
+        const upgrade3CostElement = document.getElementById('upgrade3Cost');
+        const clicksAvailableElement = document.getElementById('clicksAvailable');
+        const rechargeTimerElement = document.getElementById('rechargeTimer');
+        const resetContainer = document.getElementById('resetContainer');
+        const continueButton = document.getElementById('continueButton');
+        const resetButton = document.getElementById('resetButton');
+        const resetButtonAboveTitle = document.getElementById('resetButtonAboveTitle');
+        const confirmationOverlay = document.getElementById('confirmationOverlay');
+        const confirmResetButton = document.getElementById('confirmReset');
+        const cancelResetButton = document.getElementById('cancelReset');
+
+        // Функция обновления отображения счета
+        function updateScoreDisplay() {
+            scoreElement.textContent = score;
+        }
+
+        // Функция обновления отображения доступных кликов
+        function updateClicksAvailableDisplay() {
+            clicksAvailableElement.textContent = clicksAvailable;
+        }
+
+        // Функция обновления отображения таймера перезарядки
+        function updateRechargeTimerDisplay() {
+            rechargeTimerElement.textContent = formatTime(rechargeTimeRemaining);
+        }
+
+        // Функция форматирования времени (минуты:секунды)
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+            return `${minutes}:${formattedSeconds}`;
+        }
+
+        // Функция перезарядки кликов
+        function rechargeClicks() {
+            clicksAvailable = maxClicks;
+            localStorage.setItem('clicksAvailable', clicksAvailable.toString());
+            updateClicksAvailableDisplay();
+            rechargeTimeRemaining = 0;
+            updateRechargeTimerDisplay();
+            isRecharging = false;
+            localStorage.removeItem('isRecharging'); // Удаляем isRecharging при завершении
+            localStorage.removeItem('rechargeEndTime'); // Удаляем время окончания перезарядки
+        }
+
+        // Функция запуска таймера перезарядки
+        function startRechargeTimer() {
+            isRecharging = true;
+            let now = Date.now(); // Текущее время в миллисекундах
+            let endTime = now + 120000; // 120000 миллисекунд = 2 минуты
+            localStorage.setItem('isRecharging', 'true');
+            localStorage.setItem('rechargeEndTime', endTime.toString());
+            rechargeEndTime = endTime; // Сохраняем для использования в функции
+            rechargeTimeRemaining = 120;
+            updateRechargeTimerDisplay();
+
+            rechargeInterval = setInterval(() => {
+                rechargeTimeRemaining--;
+                updateRechargeTimerDisplay();
+
                 if (rechargeTimeRemaining <= 0) {
-                    isRecharging = false;
-                    localStorage.removeItem('isRecharging');
-                    localStorage.removeItem('rechargeEndTime');
+                    clearInterval(rechargeInterval);
+                    rechargeClicks();
                 }
+            }, 1000);
+        }
+
+        function updateImage() {
+            if (score >= 90000) {
+                clickImage.src = "image9.png";
+            } else if (score >= 80000) {
+                clickImage.src = "image8.png";
+            } else if (score >= 70000) {
+                clickImage.src = "image7.png";
+            } else if (score >= 60000) {
+                clickImage.src = "image6.png";
+            } else if (score >= 50000) {
+                clickImage.src = "image5.png";
+            } else if (score >= 40000) {
+                clickImage.src = "image4.png";
+            } else if (score >= 30000) {
+                clickImage.src = "image3.png";
+            } else if (score >= 20000) {
+                clickImage.src = "image2.png";
+            } else if (score >= 10000) {
+                clickImage.src = "image1.png";
             } else {
-                clicksAvailable = parseInt(localStorage.getItem('clicksAvailable')) || maxClicks;
+                clickImage.src = "icon.png";
             }
+        }
 
-            let autoclickerInterval;
-            let rechargeInterval;
+        // Функция клика
+        function handleClick() {
+            if (clicksAvailable > 0 && !isRecharging) {
+                score += clickValue;
+                localStorage.setItem('score', score.toString());
+                clicksAvailable--;
+                localStorage.setItem('clicksAvailable', clicksAvailable.toString());
+                updateScoreDisplay();
+                updateClicksAvailableDisplay();
+                updateImage();
 
-            const scoreElement = document.getElementById('score');
-            const clickArea = document.getElementById('clickArea');
-            const clickImage = document.getElementById('clickImage');
-            const upgrade1 = document.getElementById('upgrade1');
-            const upgrade2 = document.getElementById('upgrade2');
-            const upgrade3 = document.getElementById('upgrade3');
-            const upgrade1CostElement = document.getElementById('upgrade1Cost');
-            const upgrade2CostElement = document.getElementById('upgrade2Cost');
-            const upgrade3CostElement = document.getElementById('upgrade3Cost');
-            const clicksAvailableElement = document.getElementById('clicksAvailable');
-            const rechargeTimerElement = document.getElementById('rechargeTimer');
-            const resetContainer = document.getElementById('resetContainer');
-            const continueButton = document.getElementById('continueButton');
-            const resetButton = document.getElementById('resetButton');
-            const resetButtonAboveTitle = document.getElementById('resetButtonAboveTitle');
-            const confirmationOverlay = document.getElementById('confirmationOverlay');
-            const confirmResetButton = document.getElementById('confirmReset');
-            const cancelResetButton = document.getElementById('cancelReset');
-
-            // Функция обновления отображения счета
-            function updateScoreDisplay() {
-                scoreElement.textContent = score;
+                if (clicksAvailable === 0) {
+                    startRechargeTimer();
+                }
+                if (score >= 100000) {
+                    showResetOptions();
+                }
+                // Добавляем анимацию клика
+                clickImage.classList.add('clicked');
+                setTimeout(() => {
+                    clickImage.classList.remove('clicked');
+                }, 100); // Убираем класс через 100мс
             }
+        }
 
-            // Функция обновления отображения доступных кликов
-            function updateClicksAvailableDisplay() {
-                clicksAvailableElement.textContent = clicksAvailable;
+        // Обработчик клика мышкой и тапа по картинке
+        clickArea.addEventListener('click', handleClick);
+
+        // Обработчик нажатия клавиши
+        clickArea.addEventListener('keydown', (event) => {
+            if (event.code === 'Space') {
+                event.preventDefault();
+                handleClick();
             }
+        });
 
-            // Функция обновления отображения таймера перезарядки
-            function updateRechargeTimerDisplay() {
-                rechargeTimerElement.textContent = formatTime(rechargeTimeRemaining);
+        // Функция для покупки улучшения (общая)
+        function buyUpgrade(upgradeCost, upgradeEffect) {
+            if (isRecharging) {
+                alert('Нельзя покупать улучшения во время перезарядки!');
+                return; // Выходим из функции, если идет перезарядка
             }
-
-            // Функция форматирования времени (минуты:секунды)
-            function formatTime(seconds) {
-                const minutes = Math.floor(seconds / 60);
-                const remainingSeconds = seconds % 60;
-                const formattedSeconds = String(remainingSeconds).padStart(2, '0');
-                return `${minutes}:${formattedSeconds}`;
+            if (score >= upgradeCost) {
+                score -= upgradeCost;
+                localStorage.setItem('score', score.toString());
+                updateScoreDisplay();
+                upgradeEffect();
+            } else {
+                alert('Недостаточно очков!');
             }
+        }
 
-            // Функция перезарядки кликов
-            function rechargeClicks() {
+
+        // Автокликер
+        upgrade1.addEventListener('click', () => {
+            buyUpgrade(autoclickerCost, () => {
+                autoclickerCost = Math.ceil(autoclickerCost * 1.5);
+                localStorage.setItem('autoclickerCost', autoclickerCost.toString());
+                upgrade1CostElement.textContent = autoclickerCost;
+
+                if (!autoclickerInterval) {
+                    autoclickerInterval = setInterval(() => {
+                        if (clicksAvailable > 0 && !isRecharging) {
+                            score += clickValue;
+                            localStorage.setItem('score', score.toString());
+                            clicksAvailable--;
+                            localStorage.setItem('clicksAvailable', clicksAvailable.toString());
+                            updateScoreDisplay();
+                            updateClicksAvailableDisplay();
+                            updateImage(); // Обновление картинки в автокликере
+                            if (clicksAvailable === 0) {
+                                clearInterval(autoclickerInterval);
+                                startRechargeTimer();
+                            }
+                        } else {
+                            clearInterval(autoclickerInterval);
+                        }
+                    }, 1000);
+                }
+            });
+        });
+
+        // Улучшение клика
+        upgrade2.addEventListener('click', () => {
+            buyUpgrade(upgradedClickCost, () => {
+                clickValue *= 2;
+                localStorage.setItem('clickValue', clickValue.toString());
+                upgradedClickCost = Math.ceil(upgradedClickCost * 2);
+                localStorage.setItem('upgradedClickCost', upgradedClickCost.toString());
+                upgrade2CostElement.textContent = upgradedClickCost;
+            });
+        });
+
+        // Улучшение лимита кликов
+        upgrade3.addEventListener('click', () => {
+            buyUpgrade(clickLimitUpgradeCost, () => {
+                maxClicks = Math.ceil(maxClicks * 1.5);
+                localStorage.setItem('maxClicks', maxClicks.toString());
                 clicksAvailable = maxClicks;
                 localStorage.setItem('clicksAvailable', clicksAvailable.toString());
                 updateClicksAvailableDisplay();
-                rechargeTimeRemaining = 0;
-                updateRechargeTimerDisplay();
-                isRecharging = false;
-                localStorage.removeItem('isRecharging'); // Удаляем isRecharging при завершении
-                localStorage.removeItem('rechargeEndTime'); // Удаляем время окончания перезарядки
-            }
-
-            // Функция запуска таймера перезарядки
-            function startRechargeTimer() {
-                isRecharging = true;
-                let now = Date.now(); // Текущее время в миллисекундах
-                let endTime = now + 120000; // 120000 миллисекунд = 2 минуты
-                localStorage.setItem('isRecharging', 'true');
-                localStorage.setItem('rechargeEndTime', endTime.toString());
-                rechargeEndTime = endTime; // Сохраняем для использования в функции
-                rechargeTimeRemaining = 120;
-                updateRechargeTimerDisplay();
-
-                rechargeInterval = setInterval(() => {
-                    rechargeTimeRemaining--;
-                    updateRechargeTimerDisplay();
-
-                    if (rechargeTimeRemaining <= 0) {
-                        clearInterval(rechargeInterval);
-                        rechargeClicks();
-                    }
-                }, 1000);
-            }
-
-            function updateImage() {
-                if (score >= 90000) {
-                    clickImage.src = "image9.png";
-                } else if (score >= 80000) {
-                    clickImage.src = "image8.png";
-                } else if (score >= 70000) {
-                    clickImage.src = "image7.png";
-                } else if (score >= 60000) {
-                    clickImage.src = "image6.png";
-                } else if (score >= 50000) {
-                    clickImage.src = "image5.png";
-                } else if (score >= 40000) {
-                    clickImage.src = "image4.png";
-                } else if (score >= 30000) {
-                    clickImage.src = "image3.png";
-                } else if (score >= 20000) {
-                    clickImage.src = "image2.png";
-                } else if (score >= 10000) {
-                    clickImage.src = "image1.png";
-                } else {
-                    clickImage.src = "icon.png";
-                }
-            }
-
-            // Функция клика
-            function handleClick() {
-                if (clicksAvailable > 0 && !isRecharging) {
-                    score += clickValue;
-                    localStorage.setItem('score', score.toString());
-                    clicksAvailable--;
-                    localStorage.setItem('clicksAvailable', clicksAvailable.toString());
-                    updateScoreDisplay();
-                    updateClicksAvailableDisplay();
-                    updateImage();
-
-                    if (clicksAvailable === 0) {
-                        startRechargeTimer();
-                    }
-                    if (score >= 100000) {
-                        showResetOptions();
-                    }
-                    // Добавляем анимацию клика
-                    clickImage.classList.add('clicked');
-                    setTimeout(() => {
-                        clickImage.classList.remove('clicked');
-                    }, 100); // Убираем класс через 100мс
-                }
-            }
-
-            // Обработчик клика мышкой и тапа по картинке
-            clickArea.addEventListener('click', handleClick);
-
-            // Обработчик нажатия клавиши
-            clickArea.addEventListener('keydown', (event) => {
-                if (event.code === 'Space') {
-                    event.preventDefault();
-                    handleClick();
-                }
-            });    
-
-          // Функция для покупки улучшения (общая)
-            function buyUpgrade(upgradeCost, upgradeEffect) {
-                 if (isRecharging) {
-                    alert('Нельзя покупать улучшения во время перезарядки!');
-                    return; // Выходим из функции, если идет перезарядка
-                }   
-                if (score >= upgradeCost) {
-                    score -= upgradeCost;
-                    localStorage.setItem('score', score.toString());
-                    updateScoreDisplay();
-                    upgradeEffect();
-                } else {
-                    alert('Недостаточно очков!');
-                }
-            }
-
-
-            // Автокликер
-            upgrade1.addEventListener('click', () => {
-                buyUpgrade(autoclickerCost, () => {
-                    autoclickerCost = Math.ceil(autoclickerCost * 1.5);
-                    localStorage.setItem('autoclickerCost', autoclickerCost.toString());
-                    upgrade1CostElement.textContent = autoclickerCost;
-
-                    if (!autoclickerInterval) {
-                        autoclickerInterval = setInterval(() => {
-                            if (clicksAvailable > 0 && !isRecharging) {
-                                score += clickValue;
-                                localStorage.setItem('score', score.toString());
-                                clicksAvailable--;
-                                localStorage.setItem('clicksAvailable', clicksAvailable.toString());
-                                updateScoreDisplay();
-                                updateClicksAvailableDisplay();
-                                updateImage(); // Обновление картинки в автокликере
-                                if (clicksAvailable === 0) {
-                                    clearInterval(autoclickerInterval);
-                                    startRechargeTimer();
-                                }
-                            } else {
-                                clearInterval(autoclickerInterval);
-                            }
-                        }, 1000);
-                    }
-                });
-            });
-
-            // Улучшение клика
-            upgrade2.addEventListener('click', () => {
-                buyUpgrade(upgradedClickCost, () => {
-                    clickValue *= 2;
-                    localStorage.setItem('clickValue', clickValue.toString());
-                    upgradedClickCost = Math.ceil(upgradedClickCost * 2);
-                    localStorage.setItem('upgradedClickCost', upgradedClickCost.toString());
-                    upgrade2CostElement.textContent = upgradedClickCost;
-                });
-            });
-
-            // Улучшение лимита кликов
-            upgrade3.addEventListener('click', () => {
-                buyUpgrade(clickLimitUpgradeCost, () => {
-                    maxClicks = Math.ceil(maxClicks * 1.5);
-                    localStorage.setItem('maxClicks', maxClicks.toString());
-                    clicksAvailable = maxClicks;
-                    localStorage.setItem('clicksAvailable', clicksAvailable.toString());
-                    updateClicksAvailableDisplay();
-                    clickLimitUpgradeCost = Math.ceil(clickLimitUpgradeCost * 2);
-                    localStorage.setItem('clickLimitUpgradeCost', clickLimitUpgradeCost.toString());
-                    upgrade3CostElement.textContent = clickLimitUpgradeCost;
-                });
-            });
-
-            // Функция показа кнопок сброса
-            function showResetOptions() {
-                const hasSeenReset = localStorage.getItem('hasSeenReset');
-                if (!hasSeenReset) {
-                    resetContainer.style.display = 'flex'; // Делаем видимым и используем flexbox
-                }
-            }
-
-            // Обработчик кнопки "Продолжить"
-            continueButton.addEventListener('click', () => {
-                resetContainer.style.display = 'none'; // Скрываем кнопки
-                localStorage.setItem('hasSeenReset', 'true'); // Устанавливаем флаг
-                // resetButtonAboveTitle.style.display = 'block'; // Показываем кнопку "Начать заново"
-                //больше не надо
-                // Можно добавить что-то, если нужно продолжить игру с новыми условиями
-            });
-
-            // Функция подтверждения сброса
-            function showConfirmation() {
-                confirmationOverlay.style.display = 'flex';
-            }
-
-            // Обработчик отмены сброса
-            cancelResetButton.addEventListener('click', () => {
-                confirmationOverlay.style.display = 'none';
-            });
-
-            // Обработчик подтверждения сброса
-            confirmResetButton.addEventListener('click', () => {
-                resetGame();
-                confirmationOverlay.style.display = 'none';
-            });
-
-            // Обработчики кнопки "Начать заново"
-            resetButton.addEventListener('click', showConfirmation);
-            resetButtonAboveTitle.addEventListener('click', showConfirmation);
-
-            function resetGame() {
-                // Сбрасываем все значения
-                score = 0;
-                clickValue = 1;
-                autoclickerCost = 10;
-                upgradedClickCost = 50;
-                clickLimitUpgradeCost = 100;
-                maxClicks = 100;
-                clicksAvailable = maxClicks;
-                isRecharging = false;
-
-                // Останавливаем таймеры
-                clearInterval(rechargeInterval);
-                if (autoclickerInterval) {
-                    clearInterval(autoclickerInterval);
-                }
-                rechargeTimeRemaining = 0;
-                updateRechargeTimerDisplay();
-
-                // Очищаем localStorage
-                localStorage.clear();
-
-                // Обновляем отображение
-                updateScoreDisplay();
-                updateClicksAvailableDisplay();
-                updateRechargeTimerDisplay();
-                upgrade1CostElement.textContent = autoclickerCost;
-                upgrade2CostElement.textContent = upgradedClickCost;
+                clickLimitUpgradeCost = Math.ceil(clickLimitUpgradeCost * 2);
+                localStorage.setItem('clickLimitUpgradeCost', clickLimitUpgradeCost.toString());
                 upgrade3CostElement.textContent = clickLimitUpgradeCost;
-                updateImage(); // Обновляем картинку
+            });
+        });
 
-                // Скрываем кнопки
-                resetContainer.style.display = 'none';
-
+        // Функция показа кнопок сброса
+        function showResetOptions() {
+            const hasSeenReset = localStorage.getItem('hasSeenReset');
+            if (!hasSeenReset) {
+                resetContainer.style.display = 'flex'; // Делаем видимым и используем flexbox
             }
+        }
 
-            // Инициализация отображения
+        // Обработчик кнопки "Продолжить"
+        continueButton.addEventListener('click', () => {
+            resetContainer.style.display = 'none'; // Скрываем кнопки
+            localStorage.setItem('hasSeenReset', 'true'); // Устанавливаем флаг
+            // resetButtonAboveTitle.style.display = 'block'; // Показываем кнопку "Начать заново"
+            //больше не надо
+            // Можно добавить что-то, если нужно продолжить игру с новыми условиями
+        });
+
+        // Функция подтверждения сброса
+        function showConfirmation() {
+            confirmationOverlay.style.display = 'flex';
+        }
+
+        // Обработчик отмены сброса
+        cancelResetButton.addEventListener('click', () => {
+            confirmationOverlay.style.display = 'none';
+        });
+
+        // Обработчик подтверждения сброса
+        confirmResetButton.addEventListener('click', () => {
+            resetGame();
+            confirmationOverlay.style.display = 'none';
+        });
+
+        // Обработчики кнопки "Начать заново"
+        resetButton.addEventListener('click', showConfirmation);
+        resetButtonAboveTitle.addEventListener('click', showConfirmation);
+
+        function resetGame() {
+            // Сбрасываем все значения
+            score = 0;
+            clickValue = 1;
+            autoclickerCost = 10;
+            upgradedClickCost = 50;
+            clickLimitUpgradeCost = 100;
+            maxClicks = 100;
+            clicksAvailable = maxClicks;
+            isRecharging = false;
+
+            // Останавливаем таймеры
+            clearInterval(rechargeInterval);
+            if (autoclickerInterval) {
+                clearInterval(autoclickerInterval);
+            }
+            rechargeTimeRemaining = 0;
+            updateRechargeTimerDisplay();
+
+            // Очищаем localStorage
+            localStorage.clear();
+
+            // Обновляем отображение
             updateScoreDisplay();
             updateClicksAvailableDisplay();
             updateRechargeTimerDisplay();
             upgrade1CostElement.textContent = autoclickerCost;
             upgrade2CostElement.textContent = upgradedClickCost;
             upgrade3CostElement.textContent = clickLimitUpgradeCost;
-            updateImage();
+            updateImage(); // Обновляем картинку
 
-            // Запускаем таймер, если он был активен
-            if (isRecharging) {
-                let now = Date.now();
-                if (rechargeEndTime > now) {
-                    startRechargeTimer();
-                } else {
-                    rechargeClicks();
-                }
-            }
-            const hasSeenReset = localStorage.getItem('hasSeenReset');
-            if (score < 100000) {
-                localStorage.removeItem('hasSeenReset');
-            }
+            // Скрываем кнопки
+            resetContainer.style.display = 'none';
 
-            // Фокус на элементе clickArea
-            clickArea.focus();
-        });
+        }
+
+        // Инициализация отображения
+        updateScoreDisplay();
+        updateClicksAvailableDisplay();
+        updateRechargeTimerDisplay();
+        upgrade1CostElement.textContent = autoclickerCost;
+        upgrade2CostElement.textContent = upgradedClickCost;
+        upgrade3CostElement.textContent = clickLimitUpgradeCost;
+        updateImage();
+
+        // Запускаем таймер, если он был активен
+        if (isRecharging) {
+            let now = Date.now();
+            if (rechargeEndTime > now) {
+                startRechargeTimer();
+            } else {
+                rechargeClicks();
+            }
+        }
+        const hasSeenReset = localStorage.getItem('hasSeenReset');
+        if (score < 100000) {
+            localStorage.removeItem('hasSeenReset');
+        }
+
+        // Фокус на элементе clickArea
+        clickArea.focus();
+    });
     </script>
 </body>
+
 </html>
