@@ -55,7 +55,7 @@ h1 {
     cursor: pointer;
     outline: none;
     -webkit-tap-highlight-color: transparent;
-    perspective: 500px; /* Важно для 3D */
+    perspective: 500px; 
 }
 
 #clickImage {
@@ -66,13 +66,13 @@ h1 {
     -webkit-user-select: none;
     -ms-user-select: none;
     pointer-events: none;
-    transform-style: preserve-3d; /* Важно для 3D */
+    transform-style: preserve-3d; 
 }
 
 #clickImage.clicked {
-    /*transform: scale(0.9);*/
-    transform: translateZ(-20px); /* Сдвиг вглубь */
-    transition: transform 0.05s ease-out; /* Более быстрая анимация */
+  
+    transform: translateZ(-20px); 
+    transition: transform 0.05s ease-out; 
 }
 
 .upgrades {
@@ -193,10 +193,10 @@ h1 {
     color: #888;
 }
 
-/*Стили для кнопки*/
+
 #projectsButton {
     background-color: #3498db;
-    /*Синий*/
+  
     border: none;
     color: white;
     padding: 15px 32px;
@@ -213,25 +213,24 @@ h1 {
 
 #projectsButton:hover {
     background-color: #2980b9;
-    /*Темно-синий*/
+  
     transform: translateY(-2px);
-    /*Небольшой эффект подъема*/
+    
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
 }
 
 #projectsButton:active {
     transform: translateY(0);
-    /*Убираем эффект подъема при нажатии*/
+    
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Стили для разлетающихся картинок */
 .particle {
     position: absolute;
     width: 30px;
     height: auto;
-    animation: flyAway 0.5s ease-out forwards; /* Сокращаем время анимации */
-    pointer-events: none; /* Отключаем возможность нажатия */
+    animation: flyAway 0.5s ease-out forwards;
+    pointer-events: none; 
 }
 
 @keyframes flyAway {
@@ -278,7 +277,6 @@ h1 {
                 Увеличение лимита кликов (Стоимость: <span id="upgrade3Cost">100</span>)
             </div>
         </div>
-        <!--Кнопка "К проектам"-->
         <a href="https://Kirill-Fe.github.io/projects" id="projectsButton">К проектам</a>
     </div>
 
@@ -288,7 +286,6 @@ h1 {
         <button id="resetButton">Начать заново</button>
     </div>
 
-    <!-- Оверлей подтверждения сброса -->
     <div id="confirmationOverlay">
         <p>Вы уверены, что хотите начать заново?</p>
         <button id="confirmReset">Да</button>
@@ -297,7 +294,6 @@ h1 {
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Загружаем значения из localStorage
         let score = parseInt(localStorage.getItem('score')) || 0;
         let clickValue = parseInt(localStorage.getItem('clickValue')) || 1;
         let autoclickerCost = parseInt(localStorage.getItem('autoclickerCost')) || 10;
@@ -307,17 +303,15 @@ h1 {
 
         let clicksAvailable = maxClicks;
 
-        // Загружаем и вычисляем время перезарядки
         let isRecharging = localStorage.getItem('isRecharging') === 'true';
-        let rechargeEndTime = parseInt(localStorage.getItem('rechargeEndTime')) || 0; // Время окончания перезарядки
+        let rechargeEndTime = parseInt(localStorage.getItem('rechargeEndTime')) || 0; 
         let rechargeTimeRemaining = 0;
 
         if (isRecharging) {
             let now = Date.now();
-            rechargeTimeRemaining = Math.max(0, Math.ceil((rechargeEndTime - now) / 1000)); // Вычисляем оставшееся время
-            clicksAvailable = 0; // Клики недоступны при перезарядке
+            rechargeTimeRemaining = Math.max(0, Math.ceil((rechargeEndTime - now) / 1000)); 
+            clicksAvailable = 0; е
 
-            // Если время перезарядки уже прошло, то сбрасываем
             if (rechargeTimeRemaining <= 0) {
                 isRecharging = false;
                 localStorage.removeItem('isRecharging');
@@ -348,24 +342,20 @@ h1 {
         const confirmationOverlay = document.getElementById('confirmationOverlay');
         const confirmResetButton = document.getElementById('confirmReset');
         const cancelResetButton = document.getElementById('cancelReset');
-        const container = document.querySelector('.container'); // Получаем контейнер
-
-        // Функция обновления отображения счета
+        const container = document.querySelector('.container'); 
         function updateScoreDisplay() {
             scoreElement.textContent = score;
         }
 
-        // Функция обновления отображения доступных кликов
+      
         function updateClicksAvailableDisplay() {
             clicksAvailableElement.textContent = clicksAvailable;
         }
 
-        // Функция обновления отображения таймера перезарядки
         function updateRechargeTimerDisplay() {
             rechargeTimerElement.textContent = formatTime(rechargeTimeRemaining);
         }
 
-        // Функция форматирования времени (минуты:секунды)
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const remainingSeconds = seconds % 60;
@@ -373,7 +363,6 @@ h1 {
             return `${minutes}:${formattedSeconds}`;
         }
 
-        // Функция перезарядки кликов
         function rechargeClicks() {
             clicksAvailable = maxClicks;
             localStorage.setItem('clicksAvailable', clicksAvailable.toString());
@@ -381,18 +370,17 @@ h1 {
             rechargeTimeRemaining = 0;
             updateRechargeTimerDisplay();
             isRecharging = false;
-            localStorage.removeItem('isRecharging'); // Удаляем isRecharging при завершении
-            localStorage.removeItem('rechargeEndTime'); // Удаляем время окончания перезарядки
+            localStorage.removeItem('isRecharging'); 
+            localStorage.removeItem('rechargeEndTime'); 
         }
 
-        // Функция запуска таймера перезарядки
         function startRechargeTimer() {
             isRecharging = true;
-            let now = Date.now(); // Текущее время в миллисекундах
-            let endTime = now + 120000; // 120000 миллисекунд = 2 минуты
+            let now = Date.now(); 
+            let endTime = now + 120000;
             localStorage.setItem('isRecharging', 'true');
             localStorage.setItem('rechargeEndTime', endTime.toString());
-            rechargeEndTime = endTime; // Сохраняем для использования в функции
+            rechargeEndTime = endTime; 
             rechargeTimeRemaining = 120;
             updateRechargeTimerDisplay();
 
@@ -431,7 +419,7 @@ h1 {
             }
         }
 
-        // Функция клика
+       
         function handleClick() {
             if (clicksAvailable > 0 && !isRecharging) {
                 score += clickValue;
@@ -448,20 +436,20 @@ h1 {
                 if (score >= 100000) {
                     showResetOptions();
                 }
-                // Добавляем анимацию клика
+             
                 clickImage.classList.add('clicked');
                 setTimeout(() => {
                     clickImage.classList.remove('clicked');
-                }, 50); // Уменьшаем задержку
+                }, 50); 
 
-                // Добавляем эффект разлетающихся картинок
-                createParticles(5); // Создаем 5 частиц
+              
+                createParticles(5); 
             }
         }
 
         function createParticles(numParticles) {
-            const imageSrc = clickImage.src; // Путь к текущей картинке
-            const imageWidth = 30; // Ширина маленькой картинки (можно менять)
+            const imageSrc = clickImage.src;
+            const imageWidth = 30; 
             const imageHeight = 'auto';
             for (let i = 0; i < numParticles; i++) {
                 const particle = document.createElement('img');
@@ -470,31 +458,30 @@ h1 {
                 particle.style.width = `${imageWidth}px`;
                 particle.style.height = imageHeight;
 
-                // Случайные координаты для разлета
-                const randomX = Math.random() * 200 - 100; // От -100 до 100
-                const randomY = Math.random() * 200 - 100; // От -100 до 100
+           
+                const randomX = Math.random() * 200 - 100; 
+                const randomY = Math.random() * 200 - 100; 
                 particle.style.setProperty('--randomX', randomX.toString());
                 particle.style.setProperty('--randomY', randomY.toString());
 
-                // Начальное положение - центр кликнутой картинки
+               
                 const rect = clickImage.getBoundingClientRect();
                 particle.style.left = `${rect.left + rect.width / 2 - imageWidth / 2 -container.getBoundingClientRect().left}px`;
                 particle.style.top = `${rect.top + rect.height / 2 - imageWidth / 2 -container.getBoundingClientRect().top}px`;
 
-                // Добавляем частицу в контейнер
+              
                 container.appendChild(particle);
 
-                // Удаляем частицу после завершения анимации
                 particle.addEventListener('animationend', () => {
                     particle.remove();
                 });
             }
         }
 
-        // Обработчик клика мышкой и тапа по картинке
+        
         clickArea.addEventListener('click', handleClick);
 
-        // Обработчик нажатия клавиши
+     
         clickArea.addEventListener('keydown', (event) => {
             if (event.code === 'Space') {
                 event.preventDefault();
@@ -502,11 +489,11 @@ h1 {
             }
         });
 
-        // Функция для покупки улучшения (общая)
+     
         function buyUpgrade(upgradeCost, upgradeEffect) {
             if (isRecharging) {
                 alert('Нельзя покупать улучшения во время перезарядки!');
-                return; // Выходим из функции, если идет перезарядка
+                return; 
             }
             if (score >= upgradeCost) {
                 score -= upgradeCost;
@@ -519,7 +506,7 @@ h1 {
         }
 
 
-        // Автокликер
+
         upgrade1.addEventListener('click', () => {
             buyUpgrade(autoclickerCost, () => {
                 autoclickerCost = Math.ceil(autoclickerCost * 1.5);
@@ -535,7 +522,7 @@ h1 {
                             localStorage.setItem('clicksAvailable', clicksAvailable.toString());
                             updateScoreDisplay();
                             updateClicksAvailableDisplay();
-                            updateImage(); // Обновление картинки в автокликере
+                            updateImage();
                             if (clicksAvailable === 0) {
                                 clearInterval(autoclickerInterval);
                                 startRechargeTimer();
@@ -548,7 +535,6 @@ h1 {
             });
         });
 
-        // Улучшение клика
         upgrade2.addEventListener('click', () => {
             buyUpgrade(upgradedClickCost, () => {
                 clickValue *= 2;
@@ -559,7 +545,6 @@ h1 {
             });
         });
 
-        // Улучшение лимита кликов
         upgrade3.addEventListener('click', () => {
             buyUpgrade(clickLimitUpgradeCost, () => {
                 maxClicks = Math.ceil(maxClicks * 1.5);
@@ -573,45 +558,36 @@ h1 {
             });
         });
 
-        // Функция показа кнопок сброса
         function showResetOptions() {
             const hasSeenReset = localStorage.getItem('hasSeenReset');
             if (!hasSeenReset) {
-                resetContainer.style.display = 'flex'; // Делаем видимым и используем flexbox
+                resetContainer.style.display = 'flex';
             }
         }
 
-        // Обработчик кнопки "Продолжить"
         continueButton.addEventListener('click', () => {
-            resetContainer.style.display = 'none'; // Скрываем кнопки
-            localStorage.setItem('hasSeenReset', 'true'); // Устанавливаем флаг
-            // resetButtonAboveTitle.style.display = 'block'; // Показываем кнопку "Начать заново"
-            //больше не надо
-            // Можно добавить что-то, если нужно продолжить игру с новыми условиями
+            resetContainer.style.display = 'none'; 
+            localStorage.setItem('hasSeenReset', 'true'); 
+           
         });
 
-        // Функция подтверждения сброса
         function showConfirmation() {
             confirmationOverlay.style.display = 'flex';
         }
 
-        // Обработчик отмены сброса
         cancelResetButton.addEventListener('click', () => {
             confirmationOverlay.style.display = 'none';
         });
 
-        // Обработчик подтверждения сброса
         confirmResetButton.addEventListener('click', () => {
             resetGame();
             confirmationOverlay.style.display = 'none';
         });
 
-        // Обработчики кнопки "Начать заново"
         resetButton.addEventListener('click', showConfirmation);
         resetButtonAboveTitle.addEventListener('click', showConfirmation);
 
         function resetGame() {
-            // Сбрасываем все значения
             score = 0;
             clickValue = 1;
             autoclickerCost = 10;
@@ -621,7 +597,6 @@ h1 {
             clicksAvailable = maxClicks;
             isRecharging = false;
 
-            // Останавливаем таймеры
             clearInterval(rechargeInterval);
             if (autoclickerInterval) {
                 clearInterval(autoclickerInterval);
@@ -629,24 +604,22 @@ h1 {
             rechargeTimeRemaining = 0;
             updateRechargeTimerDisplay();
 
-            // Очищаем localStorage
             localStorage.clear();
 
-            // Обновляем отображение
             updateScoreDisplay();
             updateClicksAvailableDisplay();
             updateRechargeTimerDisplay();
             upgrade1CostElement.textContent = autoclickerCost;
             upgrade2CostElement.textContent = upgradedClickCost;
             upgrade3CostElement.textContent = clickLimitUpgradeCost;
-            updateImage(); // Обновляем картинку
+            updateImage();
 
-            // Скрываем кнопки
+   
             resetContainer.style.display = 'none';
 
         }
 
-        // Инициализация отображения
+        
         updateScoreDisplay();
         updateClicksAvailableDisplay();
         updateRechargeTimerDisplay();
@@ -655,7 +628,7 @@ h1 {
         upgrade3CostElement.textContent = clickLimitUpgradeCost;
         updateImage();
 
-        // Запускаем таймер, если он был активен
+      
         if (isRecharging) {
             let now = Date.now();
             if (rechargeEndTime > now) {
@@ -669,7 +642,7 @@ h1 {
             localStorage.removeItem('hasSeenReset');
         }
 
-        // Фокус на элементе clickArea
+       
         clickArea.focus();
     });
     </script>
