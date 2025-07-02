@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
+<html lang="ru"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cat-Clicker</title>
     <link rel="shortcut icon" href="icon.png" type="image/x-icon">
     <style>
@@ -189,6 +189,13 @@ h1 {
     background-color: #d32f2f;
 }
 
+#clickArea {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
 #footer {
     margin-top: 20px;
     font-size: 0.8em;
@@ -262,9 +269,9 @@ h1 {
         </div>
 
         <div class="info">
-            <p>На кликано: <span id="score">0</span></p>
-            <p>Доступно кликов: <span id="clicksAvailable"></span></p>
-            <p>Перезарядка через: <span id="rechargeTimer"></span></p>
+            <p>На кликано: <span id="score">41</span></p>
+            <p>Доступно кликов: <span id="clicksAvailable">59</span></p>
+            <p>Перезарядка через: <span id="rechargeTimer">0:00</span></p>
         </div>
 
         <div class="upgrades">
@@ -421,33 +428,33 @@ h1 {
             }
         }
 
-       
-        function handleClick() {
-            if (clicksAvailable > 0 && !isRecharging) {
-                score += clickValue;
-                localStorage.setItem('score', score.toString());
-                clicksAvailable--;
-                localStorage.setItem('clicksAvailable', clicksAvailable.toString());
-                updateScoreDisplay();
-                updateClicksAvailableDisplay();
-                updateImage();
+    
+function handleClick(e) {
+    e.preventDefault();
+    if (clicksAvailable > 0 && !isRecharging) {
+        score += clickValue;
+        localStorage.setItem('score', score.toString());
+        clicksAvailable--;
+        localStorage.setItem('clicksAvailable', clicksAvailable.toString());
+        updateScoreDisplay();
+        updateClicksAvailableDisplay();
+        updateImage();
 
-                if (clicksAvailable === 0) {
-                    startRechargeTimer();
-                }
-                if (score >= 100000) {
-                    showResetOptions();
-                }
-             
-                clickImage.classList.add('clicked');
-                setTimeout(() => {
-                    clickImage.classList.remove('clicked');
-                }, 50); 
-
-              
-                createParticles(5); 
-            }
+        if (clicksAvailable === 0) {
+            startRechargeTimer();
         }
+        if (score >= 100000) {
+            showResetOptions();
+        }
+     
+        clickImage.classList.add('clicked');
+        setTimeout(() => {
+            clickImage.classList.remove('clicked');
+        }, 50); 
+
+        createParticles(5); 
+    }
+}
 
         function createParticles(numParticles) {
             const imageSrc = clickImage.src;
@@ -482,6 +489,8 @@ h1 {
 
         
         clickArea.addEventListener('click', handleClick);
+        clickArea.addEventListener('touchstart', handleClick);
+
 
      
         clickArea.addEventListener('keydown', (event) => {
