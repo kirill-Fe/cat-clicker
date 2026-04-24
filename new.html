@@ -9,10 +9,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Cat-Clicker">
     <link rel="apple-touch-icon" href="icon.png">
-    <!-- Font Awesome + базовые шрифты как в florik projects -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ----- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ (ТЕМНАЯ/СВЕТЛАЯ ТЕМА) ----- */
         :root {
             --primary: #8a63f2;
             --secondary: #63f2c8;
@@ -53,7 +51,6 @@
             overflow-x: hidden;
         }
 
-        /* Кастомный скролл (как в florik projects) */
         ::-webkit-scrollbar {
             width: 12px;
             height: 12px;
@@ -71,7 +68,6 @@
             background: #7a4fdf;
         }
 
-        /* Выделение текста */
         ::selection {
             background: var(--primary);
             color: var(--lighter);
@@ -82,29 +78,13 @@
             color: var(--lighter);
         }
 
-        /* Курсоры (стиль как во florik) */
         html {
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%238a63f2" d="M3 3l18 18-6-6V11L7 6v11z"/></svg>'), auto;
         }
         a, button, .upgrade, #clickArea, .project-link, .order-btn, .reset-game-btn {
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23ff7e5f" d="M3 3l18 18-6-6V11L7 6v11z"/></svg>'), pointer;
         }
-        input, textarea {
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%2363f2c8" d="M12 1c4.97 0 9 3.59 9 8 0 2.38-.93 4.51-2.42 5.96l1.42 1.42C20.04 15.14 21 12.74 21 10c0-5.52-4.48-10-10-10S1 4.48 1 10s4.48 10 10 10c1.27 0 2.47-.24 3.57-.66l1.43 1.43C14.61 21.27 13.35 21.5 12 21.5c-6.33 0-11.5-5.17-11.5-11.5S5.67.5 12 .5zM9.5 7.5h2v2h-2zm0 3h2v2h-2zm3 0h2v2h-2zm-3 3h2v2h-2zm3 0h2v2h-2z"/></svg>'), text;
-        }
 
-        h1 {
-            font-size: 2.7rem;
-            margin-bottom: 0.4rem;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #fff, var(--secondary));
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            display: inline-block;
-        }
-
-        /* Переключатель темы (фиксированный) */
         .theme-switcher {
             position: fixed;
             top: 20px;
@@ -135,7 +115,6 @@
             box-shadow: 0 0 8px var(--primary);
         }
 
-        /* Основной контент */
         .main-wrapper {
             max-width: 1300px;
             margin: 0 auto;
@@ -272,7 +251,6 @@
             box-shadow: 0 12px 25px rgba(138,99,242,0.4);
         }
 
-        /* Футер */
         footer {
             text-align: center;
             padding: 2rem;
@@ -291,7 +269,6 @@
             text-decoration: underline;
         }
 
-        /* Оверлеи (сброс / подтверждение) */
         #resetContainer, #confirmationOverlay {
             position: fixed;
             top: 0;
@@ -340,7 +317,6 @@
             font-weight: bold;
         }
 
-        /* Адаптивность */
         @media (max-width: 600px) {
             .container {
                 padding: 1.2rem;
@@ -401,10 +377,9 @@
     </div>
 
     <footer>
-        <p>© 2025-<span id="currentYear"></span> <a href="https://t.me/Kirill_Florik" target="_blank">Kirill_Florik</a> — кликай с удовольствием 🐈</p>
+        <p>© 2025-<span id="currentYear"></span>разработано  <a href="https://kirill-fe.github.io/projects/" target="_blank">florik-projects</a></p>
     </footer>
 
-    <!-- Оверлеи оригинальной игры (не трогаем логику) -->
     <div id="resetContainer">
         <div>
             <p id="resetMessage">🎉 Ты достиг 100 000 кликов! 🎉</p>
@@ -468,7 +443,6 @@
             const confirmationOverlay = document.getElementById('confirmationOverlay');
             const confirmResetButton = document.getElementById('confirmReset');
             const cancelResetButton = document.getElementById('cancelReset');
-            const container = document.querySelector('.container');
 
             function updateScoreDisplay() { scoreElement.textContent = score; }
             function updateClicksAvailableDisplay() { clicksAvailableElement.textContent = clicksAvailable; }
@@ -524,27 +498,36 @@
                 else clickImage.src = "icon.png";
             }
 
-            function createParticles(numParticles) {
+            // ИСПРАВЛЕННАЯ ФУНКЦИЯ ЧАСТИЦ
+            let lastClickX = 0, lastClickY = 0;
+            function createParticles(numParticles, clientX, clientY) {
                 const imageSrc = clickImage.src;
-                const imageWidth = 30;
+                const particleSize = 36; // размер частицы
                 for (let i = 0; i < numParticles; i++) {
                     const particle = document.createElement('img');
                     particle.src = imageSrc;
                     particle.classList.add('particle');
-                    particle.style.width = `${imageWidth}px`;
-                    particle.style.position = 'absolute';
+                    particle.style.width = `${particleSize}px`;
+                    particle.style.position = 'fixed';
                     particle.style.pointerEvents = 'none';
-                    particle.style.zIndex = '999';
-                    const randomX = (Math.random() * 200 - 100);
-                    const randomY = (Math.random() * 200 - 100);
+                    particle.style.zIndex = '9999';
+                    particle.style.willChange = 'transform, opacity';
+                    
+                    // Случайное смещение от точки клика
+                    const offsetX = (Math.random() - 0.5) * 80;
+                    const offsetY = (Math.random() - 0.5) * 80;
+                    const randomX = (Math.random() - 0.5) * 300;
+                    const randomY = (Math.random() - 0.5) * 200 - 50;
+                    
                     particle.style.setProperty('--randomX', randomX.toString());
                     particle.style.setProperty('--randomY', randomY.toString());
-                    const rect = clickImage.getBoundingClientRect();
-                    const containerRect = container.getBoundingClientRect();
-                    particle.style.left = `${rect.left + rect.width/2 - imageWidth/2 - containerRect.left}px`;
-                    particle.style.top = `${rect.top + rect.height/2 - imageWidth/2 - containerRect.top}px`;
-                    particle.style.animation = 'flyAway 0.5s ease-out forwards';
-                    container.appendChild(particle);
+                    
+                    // Стартовая позиция — там, где был клик (плюс случайное смещение для эффекта разлёта)
+                    particle.style.left = `${clientX + offsetX - particleSize/2}px`;
+                    particle.style.top = `${clientY + offsetY - particleSize/2}px`;
+                    
+                    document.body.appendChild(particle);
+                    
                     particle.addEventListener('animationend', () => particle.remove());
                 }
             }
@@ -563,13 +546,37 @@
                     if (score >= 100000) showResetOptions();
                     clickImage.classList.add('clicked');
                     setTimeout(() => clickImage.classList.remove('clicked'), 80);
-                    createParticles(6);
+                    
+                    // Получаем координаты клика (для мыши и тач-событий)
+                    let clientX, clientY;
+                    if (e.touches) {
+                        clientX = e.touches[0].clientX;
+                        clientY = e.touches[0].clientY;
+                    } else {
+                        clientX = e.clientX;
+                        clientY = e.clientY;
+                    }
+                    // Если координаты не определены (например, вызов из Space), используем центр картинки
+                    if (!clientX || !clientY) {
+                        const rect = clickImage.getBoundingClientRect();
+                        clientX = rect.left + rect.width / 2;
+                        clientY = rect.top + rect.height / 2;
+                    }
+                    createParticles(8, clientX, clientY);
                 }
             }
 
             clickArea.addEventListener('click', handleClick);
             clickArea.addEventListener('touchstart', handleClick);
-            clickArea.addEventListener('keydown', (event) => { if (event.code === 'Space') { event.preventDefault(); handleClick(); } });
+            clickArea.addEventListener('keydown', (event) => { 
+                if (event.code === 'Space') { 
+                    event.preventDefault(); 
+                    // Для Space — используем центр картинки
+                    const rect = clickImage.getBoundingClientRect();
+                    const fakeEvent = { clientX: rect.left + rect.width/2, clientY: rect.top + rect.height/2 };
+                    handleClick(fakeEvent);
+                } 
+            });
 
             function buyUpgrade(cost, upgradeEffect) {
                 if (isRecharging) { alert('❌ Нельзя покупать улучшения во время перезарядки!'); return; }
@@ -661,23 +668,27 @@
             clickArea.focus();
         });
 
+        // Стили для анимации частиц
         const styleParticle = document.createElement('style');
         styleParticle.textContent = `
             .particle {
-                position: absolute;
-                width: 30px;
+                position: fixed;
+                width: 36px;
                 height: auto;
-                animation: flyAway 0.5s ease-out forwards;
+                animation: flyAway 0.55s ease-out forwards;
                 pointer-events: none;
-                z-index: 1000;
+                z-index: 10000;
+                filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+                border-radius: 50%;
             }
             @keyframes flyAway {
-                0% { opacity: 1; transform: translate(0,0); }
-                100% { opacity: 0; transform: translate(calc(var(--randomX) * 1px), calc(var(--randomY) * 1px)); }
+                0% { opacity: 1; transform: translate(0,0) scale(1); }
+                100% { opacity: 0; transform: translate(calc(var(--randomX) * 1px), calc(var(--randomY) * 1px)) scale(0.6); }
             }
         `;
         document.head.appendChild(styleParticle);
 
+        // Тема + год
         const themeSwitcher = document.getElementById('themeSwitcher');
         const themeIcons = document.querySelectorAll('.theme-icon');
         const body = document.body;
@@ -693,8 +704,6 @@
         const savedTheme = localStorage.getItem('theme') || 'dark';
         body.setAttribute('data-theme', savedTheme);
         document.querySelector(`.theme-icon[data-theme="${savedTheme}"]`).classList.add('active');
-
-        // Текущий год в футере
         document.getElementById('currentYear').innerText = new Date().getFullYear();
     </script>
 </body>
